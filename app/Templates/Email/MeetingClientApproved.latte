@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Schůzka potvrzena</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:'Segoe UI',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 20px;">
+  <tr><td align="center">
+    <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+      <tr>
+        <td style="background:#0f172a;padding:28px 40px;">
+          <p style="margin:0;font-family:'Courier New',monospace;font-size:22px;font-weight:700;color:#22d3ee;letter-spacing:-0.03em;">{$siteTitle}</p>
+          <p style="margin:6px 0 0;font-size:13px;color:#64748b;">Potvrzení schůzky</p>
+        </td>
+      </tr>
+
+      {* Green confirmation banner *}
+      <tr>
+        <td style="background:#f0fdf4;border-bottom:3px solid #22c55e;padding:20px 40px;">
+          <p style="margin:0;font-size:18px;font-weight:700;color:#166534;">✓ Vaše schůzka je potvrzena!</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding:36px 40px;">
+          <p style="margin:0 0 16px;font-size:16px;color:#334155;">Dobrý den, <strong>{$meeting->name}</strong>,</p>
+          <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.6;">
+            těšíme se na vás! Níže najdete potvrzené detaily vaší schůzky.
+          </p>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;margin-bottom:28px;">
+            <tr><td style="padding:20px 24px;">
+              <p style="margin:0 0 12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#16a34a;">Detaily schůzky</p>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#4b5563;width:140px;">Datum</td>
+                  <td style="padding:5px 0;font-size:16px;color:#166534;font-weight:700;">
+                    {if $meeting->preferred_date}{date('j. n. Y', strtotime((string) $meeting->preferred_date))}{else}Bude upřesněno{/if}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#4b5563;">Čas</td>
+                  <td style="padding:5px 0;font-size:16px;color:#166534;font-weight:700;">
+                    {if $meeting->preferred_time}{date('H:i', strtotime((string) $meeting->preferred_time))}{else}Bude upřesněno{/if}
+                  </td>
+                </tr>
+                {if $meeting->service_type}
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#4b5563;">Typ</td>
+                  <td style="padding:5px 0;font-size:14px;color:#166534;">{$meeting->service_type}</td>
+                </tr>
+                {/if}
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#4b5563;">Délka</td>
+                  <td style="padding:5px 0;font-size:14px;color:#166534;">30 minut</td>
+                </tr>
+              </table>
+            </td></tr>
+          </table>
+
+          {if $meeting->admin_notes}
+          <div style="background:#eff6ff;border-left:3px solid #6366f1;padding:14px 18px;border-radius:0 6px 6px 0;margin-bottom:24px;">
+            <p style="margin:0;font-size:14px;color:#3730a3;line-height:1.6;">{$meeting->admin_notes|nl2brEscape|noescape}</p>
+          </div>
+          {/if}
+
+          <p style="margin:0 0 8px;font-size:15px;color:#475569;line-height:1.6;">
+            Pokud potřebujete termín změnit nebo zrušit, kontaktujte nás co nejdříve na
+            <a href="mailto:{$fromEmail}" style="color:#6366f1;text-decoration:none;">{$fromEmail}</a>.
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:20px 40px;">
+          <p style="margin:0;font-size:13px;color:#94a3b8;">S pozdravem, <strong style="color:#475569;">{$siteTitle}</strong></p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>

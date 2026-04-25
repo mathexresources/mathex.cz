@@ -1,0 +1,16 @@
+# Apache rewrite rules for Nette (nginx uses try_files – see docker/nginx/default.conf)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule !\.(pdf|js|ico|gif|jpg|jpeg|png|svg|webp|css|woff|woff2|ttf|eot|zip)$ index.php [L]
+</IfModule>
+
+# Security: block access outside www/
+<FilesMatch "(^\.env|composer\.(json|lock)|package\.json)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Remove X-Powered-By
+Header always unset X-Powered-By

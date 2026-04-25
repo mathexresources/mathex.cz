@@ -1,0 +1,298 @@
+{block content}
+
+{* ── Toolbar ───────────────────────────────────────────────────────────────── *}
+<div class="admin-toolbar">
+    <div class="admin-toolbar__filters">
+        <div class="btn-group">
+            <a href="{link default}" class="btn btn-sm {$statusFilter === '' ? 'btn-outline btn-outline--active' : 'btn-outline'}">Vše</a>
+            <a href="{link default, status => 'pending'}"   class="btn btn-sm {$statusFilter === 'pending'   ? 'btn-outline btn-outline--active' : 'btn-outline'}">Čekající {if $pendingCount > 0}<span class="nav-badge">{$pendingCount}</span>{/if}</a>
+            <a href="{link default, status => 'confirmed'}" class="btn btn-sm {$statusFilter === 'confirmed' ? 'btn-outline btn-outline--active' : 'btn-outline'}">Potvrzené</a>
+            <a href="{link default, status => 'completed'}" class="btn btn-sm {$statusFilter === 'completed' ? 'btn-outline btn-outline--active' : 'btn-outline'}">Dokončené</a>
+            <a href="{link default, status => 'cancelled'}" class="btn btn-sm {$statusFilter === 'cancelled' ? 'btn-outline btn-outline--active' : 'btn-outline'}">Zrušené</a>
+        </div>
+    </div>
+    <div class="btn-group">
+        <a href="{link exportCsv}" class="btn btn-outline btn-sm">⬇ CSV</a>
+        <a href="{link exportIcs}" class="btn btn-outline btn-sm">📅 .ics</a>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('blockDateModal').style.display='flex'">🚫 Blokovat datum</button>
+    </div>
+</div>
+
+{* ── FullCalendar ──────────────────────────────────────────────────────────── *}
+<div class="admin-section" style="margin-bottom:1.5rem">
+    <div class="admin-section__header">
+        <h2>Kalendář</h2>
+        <div style="display:flex;gap:.5rem;align-items:center">
+            <span class="badge" style="background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid #f59e0b">● Čeká</span>
+            <span class="badge" style="background:rgba(34,197,94,.15);color:#22c55e;border:1px solid #22c55e">● Potvrzeno</span>
+            <span class="badge" style="background:rgba(99,102,241,.15);color:#6366f1;border:1px solid #6366f1">● Dokončeno</span>
+            <span class="badge" style="background:rgba(107,114,128,.15);color:#6b7280;border:1px solid #6b7280">● Zrušeno</span>
+        </div>
+    </div>
+    <div style="padding:1rem 1.5rem">
+        <div id="meetingCalendar"></div>
+    </div>
+</div>
+
+{* ── List view ─────────────────────────────────────────────────────────────── *}
+<div class="admin-section">
+    <div class="admin-section__header">
+        <h2>Seznam schůzek{if $statusFilter !== ''} – {['pending'=>'Čekající','confirmed'=>'Potvrzené','completed'=>'Dokončené','cancelled'=>'Zrušené'][$statusFilter] ?? $statusFilter}{/if}</h2>
+    </div>
+    {if iterator_count($meetings) > 0}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Jméno</th>
+                    <th>Kontakt</th>
+                    <th>Typ</th>
+                    <th>Datum</th>
+                    <th>Čas</th>
+                    <th>Stav</th>
+                    <th>Přijato</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach $meetings as $m}
+            <tr>
+                <td>
+                    <strong>{$m->name}</strong>
+                    {if $m->company}<br><small class="text-muted">{$m->company}</small>{/if}
+                </td>
+                <td>
+                    <a href="mailto:{$m->email}">{$m->email}</a>
+                    {if $m->phone}<br><a href="tel:{$m->phone}">{$m->phone}</a>{/if}
+                </td>
+                <td>{$m->service_type ?: '—'}</td>
+                <td>{$m->preferred_date ? $m->preferred_date|date:'d.m.Y' : '—'}</td>
+                <td style="font-family:var(--f-mono)">{$m->preferred_time ? $m->preferred_time|date:'H:i' : '—'}</td>
+                <td>
+                    <span class="badge badge--status-{$m->status}">
+                        {var $statusLabels = ['pending' => 'Čeká', 'confirmed' => 'Potvrzeno', 'cancelled' => 'Zrušeno', 'completed' => 'Dokončeno']}
+                        {$statusLabels[$m->status] ?? $m->status}
+                    </span>
+                </td>
+                <td>{$m->created_at|date:'d.m.Y'}</td>
+                <td class="actions">
+                    <a href="{link detail $m->id}" class="btn btn-xs btn-outline">Detail</a>
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    {else}
+        <p class="empty-state" style="padding:2rem 1.5rem">Žádné schůzky{$statusFilter ? ' v tomto stavu' : ''}.</p>
+    {/if}
+</div>
+
+{* ── Blocked dates ─────────────────────────────────────────────────────────── *}
+{if count($blockedDates) > 0}
+<div class="admin-section" style="margin-top:1.5rem">
+    <div class="admin-section__header">
+        <h2>Blokovaná data</h2>
+    </div>
+    <table class="data-table">
+        <thead>
+            <tr><th>Od</th><th>Do</th><th>Důvod</th><th>Přidáno</th><th>Akce</th></tr>
+        </thead>
+        <tbody>
+        {foreach $blockedDates as $bd}
+        <tr>
+            <td>{$bd->date_from|date:'d.m.Y'}</td>
+            <td>{$bd->date_to|date:'d.m.Y'}</td>
+            <td>{$bd->reason ?: '—'}</td>
+            <td>{$bd->created_at|date:'d.m.Y'}</td>
+            <td class="actions">
+                <a href="{link unblockDate! $bd->id}" class="btn btn-xs btn-outline btn-outline--danger"
+                   onclick="return confirm('Odblokovat tento den?')">Odblokovat</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+{/if}
+
+{* ── Block date modal ──────────────────────────────────────────────────────── *}
+<div id="blockDateModal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;background:rgba(0,0,0,.6)">
+    <div style="background:var(--color-bg-card);border:1px solid var(--color-border);border-radius:8px;padding:2rem;width:100%;max-width:440px;box-shadow:0 8px 32px rgba(0,0,0,.4)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+            <h3 style="margin:0;font-size:1.125rem">Blokovat datum</h3>
+            <button onclick="document.getElementById('blockDateModal').style.display='none'" style="background:none;border:none;color:var(--color-muted);font-size:1.5rem;cursor:pointer;line-height:1">×</button>
+        </div>
+        <form method="get" action="{link blockDate!}">
+            <div class="form-group">
+                <label>Datum od</label>
+                <input type="date" name="date_from" class="form-control" required min="{date('Y-m-d')}">
+            </div>
+            <div class="form-group">
+                <label>Datum do <small style="color:var(--color-muted)">(nechat prázdné pro jednoduchý den)</small></label>
+                <input type="date" name="date_to" class="form-control" min="{date('Y-m-d')}">
+            </div>
+            <div class="form-group">
+                <label>Důvod (nepovinné)</label>
+                <input type="text" name="reason" class="form-control" placeholder="např. Dovolená, Konference…" maxlength="255">
+            </div>
+            <div class="form-actions" style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem">
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('blockDateModal').style.display='none'">Zrušit</button>
+                <button type="submit" class="btn btn-primary">Blokovat</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{* ── Meeting detail modal (populated by FullCalendar click) ─────────────────── *}
+<div id="meetingModal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;background:rgba(0,0,0,.6)">
+    <div style="background:var(--color-bg-card);border:1px solid var(--color-border);border-radius:8px;padding:0;width:100%;max-width:520px;box-shadow:0 8px 32px rgba(0,0,0,.4);overflow:hidden">
+        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--color-border);display:flex;justify-content:space-between;align-items:center">
+            <div>
+                <h3 id="modalName" style="margin:0;font-size:1.1rem"></h3>
+                <span id="modalStatusBadge" class="badge" style="margin-top:.3rem;display:inline-block"></span>
+            </div>
+            <button onclick="document.getElementById('meetingModal').style.display='none'" style="background:none;border:none;color:var(--color-muted);font-size:1.5rem;cursor:pointer;line-height:1">×</button>
+        </div>
+        <div style="padding:1.5rem">
+            <dl class="detail-list" id="modalDetails"></dl>
+        </div>
+        <div style="padding:1rem 1.5rem;border-top:1px solid var(--color-border);display:flex;gap:.5rem;flex-wrap:wrap">
+            <a id="modalDetailLink"   href="#" class="btn btn-primary btn-sm">Otevřít detail</a>
+            <a id="modalConfirmLink"  href="#" class="btn btn-outline btn-sm" onclick="return confirm('Potvrdit schůzku a odeslat e-mail?')">✓ Potvrdit</a>
+            <a id="modalCancelLink"   href="#" class="btn btn-outline btn-outline--danger btn-sm" onclick="return confirm('Zrušit schůzku a odeslat e-mail klientovi?')">✕ Zrušit</a>
+            <a id="modalCompleteLink" href="#" class="btn btn-ghost btn-sm">✓ Dokončit</a>
+        </div>
+    </div>
+</div>
+
+{block extraHead}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
+{/block}
+
+{block extraFoot}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script>
+(function () {
+    const eventsUrl   = {link eventsJson|json|noescape};
+    const detailBase  = {link detail 0|json|noescape};
+    const statusBase  = {link updateStatus 0|json|noescape};
+
+    function makeStatusUrl(id, status) {
+        return statusBase.replace('/0', '/' + id) + '?status=' + status;
+    }
+    function makeDetailUrl(id) {
+        return detailBase.replace('/0', '/' + id);
+    }
+
+    const calendar = new FullCalendar.Calendar(document.getElementById('meetingCalendar'), {
+        initialView:       'dayGridMonth',
+        locale:            'cs',
+        firstDay:          1,
+        height:            'auto',
+        headerToolbar: {
+            left:   'prev,next today',
+            center: 'title',
+            right:  'dayGridMonth,timeGridWeek,listMonth'
+        },
+        eventSources: [{
+            url:   eventsUrl,
+            method: 'GET',
+            extraParams: function() {
+                const view = calendar.view;
+                return {
+                    start: view.currentStart.toISOString().slice(0,10),
+                    end:   view.currentEnd.toISOString().slice(0,10),
+                };
+            },
+            failure: function() { console.warn('FullCalendar: failed to load events'); }
+        }],
+        eventClick: function(info) {
+            const p = info.event.extendedProps;
+            if (p.type === 'blocked') return;
+
+            const id    = info.event.id;
+            const title = info.event.title;
+            const status = p.status;
+
+            const statusLabels = { pending:'Čeká', confirmed:'Potvrzeno', cancelled:'Zrušeno', completed:'Dokončeno' };
+            const statusColors = { pending:'badge--status-pending', confirmed:'badge--status-confirmed', cancelled:'badge--status-cancelled', completed:'badge--status-completed' };
+
+            document.getElementById('modalName').textContent = title;
+
+            const badge = document.getElementById('modalStatusBadge');
+            badge.textContent = statusLabels[status] || status;
+            badge.className = 'badge ' + (statusColors[status] || '');
+
+            const dl = document.getElementById('modalDetails');
+            dl.innerHTML = '';
+            const rows = [
+                ['Datum', p.date_fmt || '—'],
+                ['Čas',   p.time_fmt || '—'],
+                ['E-mail', p.email ? '<a href="mailto:' + p.email + '">' + p.email + '</a>' : '—'],
+                ['Telefon', p.phone || '—'],
+                ['Typ', p.service || '—'],
+            ];
+            if (p.message) rows.push(['Zpráva', p.message.substring(0, 160) + (p.message.length > 160 ? '…' : '')]);
+
+            rows.forEach(([k, v]) => {
+                dl.innerHTML += '<dt>' + k + '</dt><dd>' + v + '</dd>';
+            });
+
+            document.getElementById('modalDetailLink').href   = makeDetailUrl(id);
+            document.getElementById('modalConfirmLink').href  = makeStatusUrl(id, 'confirmed');
+            document.getElementById('modalCancelLink').href   = makeStatusUrl(id, 'cancelled');
+            document.getElementById('modalCompleteLink').href = makeStatusUrl(id, 'completed');
+
+            // Hide irrelevant buttons
+            document.getElementById('modalConfirmLink').style.display  = status !== 'confirmed' ? '' : 'none';
+            document.getElementById('modalCancelLink').style.display   = status !== 'cancelled' ? '' : 'none';
+            document.getElementById('modalCompleteLink').style.display = status !== 'completed' ? '' : 'none';
+
+            document.getElementById('meetingModal').style.display = 'flex';
+        },
+        themeSystem: 'standard',
+    });
+
+    calendar.render();
+
+    // Close modals on overlay click
+    ['meetingModal','blockDateModal'].forEach(id => {
+        document.getElementById(id).addEventListener('click', function(e) {
+            if (e.target === this) this.style.display = 'none';
+        });
+    });
+
+    // Auto-fill date_to from date_from in block modal
+    document.querySelector('#blockDateModal [name="date_from"]').addEventListener('change', function() {
+        const dt = document.querySelector('#blockDateModal [name="date_to"]');
+        if (!dt.value) dt.value = this.value;
+        dt.min = this.value;
+    });
+})();
+</script>
+
+<style>
+/* FullCalendar dark-theme overrides */
+.fc { color: var(--color-text); }
+.fc-toolbar-title { font-family: var(--f-mono); font-size: 1rem !important; }
+.fc-button { background: var(--color-bg-elevated) !important; border-color: var(--color-border) !important; color: var(--color-text) !important; font-size: 0.8125rem !important; }
+.fc-button-active, .fc-button:hover { background: var(--color-accent-dim) !important; border-color: var(--color-accent) !important; color: var(--color-accent) !important; }
+.fc-daygrid-day, .fc-timegrid-slot { background: var(--color-bg) !important; }
+.fc-daygrid-day:hover { background: var(--color-bg-elevated) !important; }
+.fc-col-header-cell { background: var(--color-bg-card) !important; font-size: 0.8125rem; color: var(--color-muted) !important; }
+.fc-daygrid-day-number, .fc-list-day-cushion { color: var(--color-muted) !important; font-size: 0.8125rem; }
+.fc-day-today .fc-daygrid-day-number { color: var(--color-accent) !important; font-weight: 700; }
+.fc-day-today { background: rgba(34,211,238,0.04) !important; }
+.fc-theme-standard td, .fc-theme-standard th { border-color: var(--color-border) !important; }
+.fc-event { cursor: pointer; font-size: 0.78rem !important; }
+.fc-blocked { opacity: .5; }
+.fc-list-event:hover td { background: var(--color-bg-elevated) !important; }
+
+/* Detail list in modal */
+.detail-list { display: grid; grid-template-columns: 120px 1fr; gap: .35rem .75rem; font-size: .9rem; margin: 0; }
+.detail-list dt { color: var(--color-muted); font-weight: 500; }
+.detail-list dd { margin: 0; color: var(--color-text); }
+.detail-list a { color: var(--color-accent); text-decoration: none; }
+</style>
+{/block}
+
+{/block}

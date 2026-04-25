@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>{$siteTitle} – Blog</title>
+        <link>{$blogUrl}</link>
+        <description>Články o PHP, Nette, webovém vývoji a freelance životě.</description>
+        <language>cs</language>
+        <lastBuildDate>{$buildDate}</lastBuildDate>
+        <atom:link href="{$feedUrl}" rel="self" type="application/rss+xml"/>
+        {foreach $posts as $post}
+        <item>
+            <title>{$post->title_cs}</title>
+            <link>{$siteUrl}/blog/{$post->slug}</link>
+            <guid isPermaLink="true">{$siteUrl}/blog/{$post->slug}</guid>
+            <pubDate>{$post->published_at|date:'D, d M Y H:i:s'} +0000</pubDate>
+            {if $post->perex_cs}<description>{$post->perex_cs}</description>{/if}
+            {if $post->cover_image}<enclosure url="{$post->cover_image}" type="image/jpeg"/>{/if}
+            {var $postTags = $post->tags ? json_decode($post->tags, true) : []}
+            {foreach $postTags as $tag}<category>{$tag}</category>{/foreach}
+        </item>
+        {/foreach}
+    </channel>
+</rss>

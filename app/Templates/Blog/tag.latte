@@ -1,0 +1,91 @@
+{block content}
+
+<section class="page-header">
+    <div class="container">
+        <a href="{link default}" class="back-link">← Zpět na blog</a>
+        <div class="page-header__eyebrow">Štítek</div>
+        <h1>{$pageTitle}</h1>
+        <p class="page-header__lead">{$total} {($total === 1) ? 'článek' : (($total >= 2 && $total <= 4) ? 'články' : 'článků')}</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {* Tag cloud *}
+        {if $allTags}
+        <div class="blog-tags-cloud reveal">
+            {foreach $allTags as $t}
+                <a href="{link tag $t}" class="tag{$activeTag === $t ? ' tag--active' : ''}">{$t}</a>
+            {/foreach}
+        </div>
+        {/if}
+
+        {if iterator_count(clone $posts) > 0}
+        <div class="posts-grid posts-grid--full">
+            {foreach $posts as $i => $post}
+            <article class="post-card reveal reveal--delay-{($i % 3) + 1}">
+                {if $post->cover_image}
+                    <a href="{link detail $post->slug}" class="post-card__image-link" tabindex="-1" aria-hidden="true">
+                        <img src="{$post->cover_image}" alt="{$post->{'title_' . $locale}}" class="post-card__image" loading="lazy">
+                    </a>
+                {/if}
+                <div class="post-card__body">
+                    <div class="post-card__meta">
+                        <time class="post-card__date" datetime="{$post->published_at}">{$post->published_at|date:'j. n. Y'}</time>
+                        {if $post->reading_time_min}
+                            <span class="post-card__reading">⏱ {$post->reading_time_min} min</span>
+                        {/if}
+                    </div>
+                    <h2 class="post-card__title">
+                        <a href="{link detail $post->slug}">{$post->{'title_' . $locale}}</a>
+                    </h2>
+                    {if $post->{'perex_' . $locale}}<p class="post-card__perex">{$post->{'perex_' . $locale}}</p>{/if}
+                    {if $post->tags}
+                        <ul class="tag-list">
+                            {foreach json_decode($post->tags, true) ?? [] as $t}
+                                <li class="tag"><a href="{link tag $t}">{$t}</a></li>
+                            {/foreach}
+                        </ul>
+                    {/if}
+                    <a href="{link detail $post->slug}" class="post-card__link">Číst článek →</a>
+                </div>
+            </article>
+            {/foreach}
+        </div>
+
+        {if $pageCount > 1}
+        <nav class="pagination reveal" aria-label="Stránkování">
+            {if $page > 1}
+                <a href="{link tag $tag, page: $page - 1}" class="pagination__prev">← Novější</a>
+            {/if}
+            <span class="pagination__info">{$page} / {$pageCount}</span>
+            {if $page < $pageCount}
+                <a href="{link tag $tag, page: $page + 1}" class="pagination__next">Starší →</a>
+            {/if}
+        </nav>
+        {/if}
+
+        {else}
+            <p class="empty-state">Pod tímto štítkem zatím žádné články nejsou.</p>
+        {/if}
+    </div>
+</section>
+
+{* ─── Newsletter CTA ──────────────────────────────────────────────────────── *}
+<section class="section newsletter-cta reveal">
+    <div class="container">
+        <div class="newsletter-box">
+            <div class="newsletter-box__text">
+                <h2>Odebírejte newsletter</h2>
+                <p>Nejnovější články o PHP a webovém vývoji přímo do vaší schránky.{if $subscriberCount > 0} Přidejte se k {$subscriberCount} odběratelům.{/if}</p>
+            </div>
+            <form class="newsletter-box__form" action="{link //Newsletter:subscribe}" method="post">
+                <input type="email" name="email" placeholder="vas@email.cz" required class="newsletter-box__input" autocomplete="email">
+                <button type="submit" class="btn btn-primary">Přihlásit se</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{/block}

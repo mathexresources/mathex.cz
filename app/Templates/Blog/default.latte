@@ -1,0 +1,114 @@
+{block content}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header__eyebrow">Blog</div>
+        <h1>{$pageTitle}</h1>
+        <p class="page-header__lead">Články o PHP, Nette, webovém vývoji a freelance životě.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {* Search & tag filter *}
+        <form class="blog-filter reveal" action="{link default}" method="get" role="search">
+            <input type="text" name="search" value="{$search}" placeholder="Hledat v článcích…" class="blog-filter__search" aria-label="Hledat">
+            <button type="submit" class="btn btn-outline btn-sm">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Hledat
+            </button>
+            {if $search || $activeTag}
+                <a href="{link default}" class="btn btn-ghost btn-sm">✕ Zrušit filtr</a>
+            {/if}
+        </form>
+
+        {* Tag cloud *}
+        {if $allTags}
+        <div class="blog-tags-cloud reveal">
+            {foreach $allTags as $t}
+                <a href="{link tag $t}" class="tag{$activeTag === $t ? ' tag--active' : ''}">{$t}</a>
+            {/foreach}
+        </div>
+        {/if}
+
+        {if $activeTag}
+            <p class="blog-filter__active-tag reveal">
+                Zobrazuji články se štítkem: <strong>{$activeTag}</strong>
+            </p>
+        {/if}
+
+        {* Post grid *}
+        {if iterator_count(clone $posts) > 0}
+        <div class="posts-grid posts-grid--full">
+            {foreach $posts as $i => $post}
+            <article class="post-card reveal reveal--delay-{($i % 3) + 1}">
+                {if $post->cover_image}
+                    <a href="{link detail $post->slug}" class="post-card__image-link" tabindex="-1" aria-hidden="true">
+                        <img src="{$post->cover_image}" alt="{$post->{'title_' . $locale}}" class="post-card__image" loading="lazy" width="1200" height="630">
+                    </a>
+                {/if}
+                <div class="post-card__body">
+                    <div class="post-card__meta">
+                        <time class="post-card__date" datetime="{$post->published_at}">{$post->published_at|date:'j. n. Y'}</time>
+                        {if $post->reading_time_min}
+                            <span class="post-card__reading">⏱ {$post->reading_time_min} min</span>
+                        {/if}
+                    </div>
+                    <h2 class="post-card__title">
+                        <a href="{link detail $post->slug}">{$post->{'title_' . $locale}}</a>
+                    </h2>
+                    {if $post->{'perex_' . $locale}}<p class="post-card__perex">{$post->{'perex_' . $locale}}</p>{/if}
+                    {if $post->tags}
+                        <ul class="tag-list">
+                            {foreach json_decode($post->tags, true) ?? [] as $tag}
+                                <li class="tag"><a href="{link tag $tag}">{$tag}</a></li>
+                            {/foreach}
+                        </ul>
+                    {/if}
+                    <a href="{link detail $post->slug}" class="post-card__link">Číst článek →</a>
+                </div>
+            </article>
+            {/foreach}
+        </div>
+
+        {* Pagination *}
+        {if $pageCount > 1}
+        <nav class="pagination reveal" aria-label="Stránkování">
+            {if $page > 1}
+                <a href="{link default, page: $page - 1, search: $search, tag: $activeTag}" class="pagination__prev">← Novější</a>
+            {/if}
+            <span class="pagination__info">{$page} / {$pageCount}</span>
+            {if $page < $pageCount}
+                <a href="{link default, page: $page + 1, search: $search, tag: $activeTag}" class="pagination__next">Starší →</a>
+            {/if}
+        </nav>
+        {/if}
+
+        {else}
+            <p class="empty-state reveal">
+                {if $search}Žádné výsledky pro „{$search}".{elseif $activeTag}Žádné články se štítkem „{$activeTag}".{else}Žádné články k zobrazení.{/if}
+            </p>
+        {/if}
+
+    </div>
+</section>
+
+{* ─── Newsletter CTA ──────────────────────────────────────────────────────── *}
+<section class="section newsletter-cta reveal">
+    <div class="container">
+        <div class="newsletter-box">
+            <div class="newsletter-box__text">
+                <h2>Odebírejte newsletter</h2>
+                <p>Nejnovější články o PHP a webovém vývoji přímo do vaší schránky. Žádný spam.{if $subscriberCount > 0} Přidejte se k {$subscriberCount} odběratelům.{/if}</p>
+            </div>
+            <form class="newsletter-box__form" action="{link //Newsletter:subscribe}" method="post">
+                <input type="hidden" name="_token" value="{$user->getId() ?? ''}">
+                <input type="email" name="email" placeholder="vas@email.cz" required class="newsletter-box__input" autocomplete="email">
+                <button type="submit" class="btn btn-primary">Přihlásit se</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{/block}

@@ -1,0 +1,111 @@
+{block content}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header__eyebrow">{if $locale === 'en'}Legal{else}Právní informace{/if}</div>
+        <h1>{$pageTitle}</h1>
+        <p class="page-header__lead">
+            {if $locale === 'en'}
+                Last updated: January 1, 2025
+            {else}
+                Poslední aktualizace: 1. ledna 2025
+            {/if}
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="prose" style="max-width:800px; margin:0 auto;">
+
+{if $locale === 'en'}
+
+<h2>1. Controller of Personal Data</h2>
+<p>The controller of personal data processed through this website is <strong>Mathex.cz</strong> (Brno, Czech Republic, e-mail: info@mathex.cz). Any questions regarding the processing of your personal data can be directed to the above e-mail address.</p>
+
+<h2>2. What Data We Process and Why</h2>
+
+<h3>2.1 Contact Form</h3>
+<p>When you use the contact form we process: your name, e-mail address, optional subject, and message content. The legal basis is your explicit consent (GDPR Art. 6(1)(a)) confirmed by the checkbox on the form. The purpose is to respond to your inquiry. Data are retained for <strong>2 years</strong> and then permanently deleted.</p>
+
+<h3>2.2 Meeting Bookings</h3>
+<p>When booking a call we process your name, e-mail, and preferred time slot to arrange the meeting. Data are retained for 1 year after the meeting date.</p>
+
+<h3>2.3 Analytics (Privacy-Friendly)</h3>
+<p>We run our own page-view analytics. No personally identifiable information is stored: your IP address is irreversibly hashed with SHA-256 before storage and is never shared with third parties. No tracking cookies are used for analytics. You may opt-out by declining cookies in the consent banner.</p>
+
+<h3>2.4 Google Analytics (Optional)</h3>
+<p>If you accept analytics cookies, we may load Google Analytics 4 (GA4) to gather aggregated traffic statistics. GA4 sets cookies and transfers data to Google servers in the USA. For details see <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>. You may withdraw consent at any time via the cookie banner or your browser settings.</p>
+
+<h3>2.5 Newsletter</h3>
+<p>If you subscribe to the newsletter we store your e-mail address until you unsubscribe. Subscription is double-opt-in: you receive a confirmation e-mail and must click the link to activate.</p>
+
+<h2>3. Cookies</h2>
+<table class="privacy-table">
+    <thead><tr><th>Cookie</th><th>Purpose</th><th>Lifetime</th></tr></thead>
+    <tbody>
+        <tr><td><code>lang</code></td><td>Stores your language preference (cs/en)</td><td>1 year</td></tr>
+        <tr><td><code>cookie_consent</code></td><td>Remembers your cookie consent decision</td><td>1 year</td></tr>
+        <tr><td><code>PHPSESSID</code></td><td>PHP session (security, CSRF protection)</td><td>Session</td></tr>
+        <tr><td>GA4 cookies</td><td>Google Analytics traffic measurement (optional, only with consent)</td><td>Up to 2 years</td></tr>
+    </tbody>
+</table>
+
+<h2>4. Your Rights</h2>
+<p>Under the GDPR you have the right to: <strong>access</strong> your personal data; <strong>rectification</strong> of inaccurate data; <strong>erasure</strong> ("right to be forgotten"); <strong>restriction</strong> of processing; <strong>data portability</strong>; and to <strong>lodge a complaint</strong> with the supervisory authority (Czech Office for Personal Data Protection – <a href="https://www.uoou.cz" target="_blank" rel="noopener">uoou.cz</a>). To exercise your rights, contact us at info@mathex.cz.</p>
+
+<h2>5. Data Security</h2>
+<p>All data is transmitted over HTTPS. Passwords are stored as bcrypt hashes. Access to the admin panel is protected by brute-force lockout. Contact message IP addresses are SHA-256 hashed. We apply the principle of minimal data retention.</p>
+
+<h2>6. Changes to This Policy</h2>
+<p>We may update this policy. The date at the top of the page reflects the latest revision. Continued use of the site after changes constitutes acceptance of the revised policy.</p>
+
+{else}
+
+<h2>1. Správce osobních údajů</h2>
+<p>Správcem osobních údajů zpracovávaných prostřednictvím tohoto webu je <strong>Mathex.cz</strong> (Brno, Česká republika, e-mail: info@mathex.cz). Dotazy týkající se zpracování osobních údajů zasílejte na výše uvedenou e-mailovou adresu.</p>
+
+<h2>2. Jaké údaje zpracováváme a proč</h2>
+
+<h3>2.1 Kontaktní formulář</h3>
+<p>Při použití kontaktního formuláře zpracováváme: vaše jméno, e-mailovou adresu, volitelný předmět a obsah zprávy. Právním základem je váš výslovný souhlas (čl. 6 odst. 1 písm. a) GDPR) potvrzený zaškrtnutím políčka ve formuláři. Účelem je zodpovězení vašeho dotazu. Údaje jsou uchovávány <strong>2 roky</strong> a poté trvale smazány.</p>
+
+<h3>2.2 Rezervace schůzky</h3>
+<p>Při rezervaci callu zpracováváme vaše jméno, e-mail a preferovaný čas za účelem sjednání schůzky. Údaje jsou uchovávány 1 rok po datu schůzky.</p>
+
+<h3>2.3 Analytika (ochrana soukromí)</h3>
+<p>Provozujeme vlastní analytiku návštěvnosti webu. Neukládáme žádné osobní identifikátory: vaše IP adresa je před uložením nevratně zahashována algoritmem SHA-256 a není sdílena s třetími stranami. Pro analytiku nepoužíváme sledovací cookies. Souhlas můžete odmítnout v banneru souhlasu s cookies.</p>
+
+<h3>2.4 Google Analytics (volitelně)</h3>
+<p>Pokud přijmete analytické cookies, může být načten Google Analytics 4 (GA4) pro sběr agregovaných statistik. GA4 nastavuje cookies a přenáší data na servery Google v USA. Podrobnosti viz <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Zásady ochrany soukromí Google</a>. Souhlas lze kdykoli odvolat prostřednictvím banneru cookies nebo nastavením prohlížeče.</p>
+
+<h3>2.5 Newsletter</h3>
+<p>Při přihlášení k odběru newsletteru uchováváme vaši e-mailovou adresu až do odhlášení. Přihlášení je dvojité (double opt-in): obdržíte potvrzovací e-mail a musíte kliknout na odkaz pro aktivaci.</p>
+
+<h2>3. Cookies</h2>
+<table class="privacy-table">
+    <thead><tr><th>Cookie</th><th>Účel</th><th>Platnost</th></tr></thead>
+    <tbody>
+        <tr><td><code>lang</code></td><td>Uchovává předvolbu jazyka (cs/en)</td><td>1 rok</td></tr>
+        <tr><td><code>cookie_consent</code></td><td>Pamatuje si vaše rozhodnutí ohledně cookies</td><td>1 rok</td></tr>
+        <tr><td><code>PHPSESSID</code></td><td>PHP session (bezpečnost, ochrana před CSRF)</td><td>Session</td></tr>
+        <tr><td>GA4 cookies</td><td>Měření návštěvnosti Google Analytics (volitelné, jen se souhlasem)</td><td>Až 2 roky</td></tr>
+    </tbody>
+</table>
+
+<h2>4. Vaše práva</h2>
+<p>Podle GDPR máte právo na: <strong>přístup</strong> ke svým osobním údajům; <strong>opravu</strong> nepřesných údajů; <strong>výmaz</strong> („právo být zapomenut"); <strong>omezení</strong> zpracování; <strong>přenositelnost</strong> údajů; a podání <strong>stížnosti</strong> u dozorového úřadu (Úřad pro ochranu osobních údajů – <a href="https://www.uoou.cz" target="_blank" rel="noopener">uoou.cz</a>). Pro uplatnění práv nás kontaktujte na info@mathex.cz.</p>
+
+<h2>5. Bezpečnost dat</h2>
+<p>Veškerá data jsou přenášena přes HTTPS. Hesla jsou uložena jako bcrypt hashe. Přístup do administrace je chráněn blokováním při opakovaném neúspěšném přihlášení. IP adresy kontaktních zpráv jsou zaheshovány SHA-256. Uplatňujeme princip minimalizace doby uchování dat.</p>
+
+<h2>6. Změny těchto zásad</h2>
+<p>Tyto zásady mohou být aktualizovány. Datum v záhlaví stránky odráží poslední revizi. Pokračující používání webu po změnách znamená souhlas s aktualizovanými zásadami.</p>
+
+{/if}
+
+        </div>
+    </div>
+</section>
+
+{/block}

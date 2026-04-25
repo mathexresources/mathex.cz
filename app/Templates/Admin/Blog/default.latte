@@ -1,0 +1,82 @@
+{block content}
+<div class="admin-toolbar">
+    <div class="admin-toolbar__filters">
+        <form method="get" action="" class="search-form">
+            <input type="text" name="search" value="{$search}" class="form-control form-control--sm" placeholder="Hledat článek…">
+            <select name="status" class="form-control form-control--sm">
+                <option value="">Všechny stavy</option>
+                <option value="draft" n:attr="selected => $statusFilter === 'draft'">Koncepty</option>
+                <option value="published" n:attr="selected => $statusFilter === 'published'">Publikované</option>
+                <option value="archived" n:attr="selected => $statusFilter === 'archived'">Archivované</option>
+            </select>
+            <button type="submit" class="btn btn-outline btn-sm">Filtrovat</button>
+            {if $search || $statusFilter}<a href="{link default}" class="btn btn-sm">Zrušit filtr</a>{/if}
+        </form>
+    </div>
+    <div style="display:flex;gap:0.5rem;">
+        <a href="{link comments}" class="btn btn-outline">
+            💬 Komentáře{if $pendingComments > 0} <span class="nav-badge">{$pendingComments}</span>{/if}
+        </a>
+        <a href="{link edit}" class="btn btn-primary">+ Nový článek</a>
+    </div>
+</div>
+
+<form method="post" action="{link bulk}" id="bulkForm">
+    {if $posts->count() > 0}
+        <div class="bulk-bar">
+            <label class="checkbox-label"><input type="checkbox" id="selectAll"> Vybrat vše</label>
+            <select name="bulk_action" class="form-control form-control--sm">
+                <option value="">— Hromadná akce —</option>
+                <option value="publish">Publikovat</option>
+                <option value="archive">Archivovat</option>
+                <option value="delete">Smazat</option>
+            </select>
+            <button type="submit" class="btn btn-outline btn-sm" onclick="return confirmBulk()">Provést</button>
+        </div>
+
+        <div class="admin-section">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width:32px"></th>
+                        <th>Nadpis</th>
+                        <th>Slug</th>
+                        <th>Stav</th>
+                        <th>Publikováno</th>
+                        <th>Zobrazení</th>
+                        <th>Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {foreach $posts as $post}
+                <tr>
+                    <td><input type="checkbox" name="ids[]" value="{$post->id}" class="row-checkbox"></td>
+                    <td>
+                        <strong>{$post->title_cs}</strong>
+                        {if $post->title_en}<br><small class="text-muted">{$post->title_en}</small>{/if}
+                    </td>
+                    <td><code>{$post->slug}</code></td>
+                    <td>
+                        <a href="{link toggleStatus $post->id}" class="badge {$post->status === 'published' ? 'badge--green' : ($post->status === 'archived' ? 'badge--gray' : 'badge--yellow')}">
+                            {$post->status === 'published' ? 'Publikováno' : ($post->status === 'archived' ? 'Archivováno' : 'Koncept')}
+                        </a>
+                    </td>
+                    <td>{$post->published_at ? ($post->published_at|date:'d.m.Y') : '—'}</td>
+                    <td>{$post->views_count ?? 0}</td>
+                    <td class="actions">
+                        <a href="{link edit $post->id}" class="btn btn-xs btn-outline">Upravit</a>
+                        <a href="{link delete $post->id}" class="btn btn-xs btn-danger"
+                           onclick="return confirm('Opravdu smazat článek?')">Smazat</a>
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+
+        {include '../../_pagination.latte', paginator => $paginator, link => 'default', params => ['search' => $search, 'status' => $statusFilter]}
+    {else}
+        <p class="empty-state">Žádné články. <a href="{link edit}">Napsat první</a></p>
+    {/if}
+</form>
+{/block}

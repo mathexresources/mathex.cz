@@ -1,0 +1,13 @@
+# Copy this file to local.neon and adjust values for your local environment.
+# local.neon is git-ignored – never commit it.
+
+application:
+    catchExceptions: false
+
+# Override database for local dev outside Docker (e.g. running php -S):
+# database:
+#     dsn: 'mysql:host=127.0.0.1;dbname=mathex;charset=utf8mb4'
+
+# Enable Tracy browser bar on specific IPs:
+# tracy:
+#     bar: true

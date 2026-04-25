@@ -1,0 +1,44 @@
+# Git
+.git
+.gitignore
+
+# Dev tools
+.idea
+.vscode
+*.swp
+*.swo
+
+# Dependency dirs (mounted as volume in dev, installed fresh in prod)
+vendor
+
+# Nette temp/log (runtime, never build into image)
+temp/
+log/
+
+# Assets build artifacts
+www/assets/dist
+
+# Env files (injected at runtime)
+.env
+.env.local
+
+# Tests
+tests/
+
+# Docs
+README.md
+CHANGELOG.md
+*.md
+
+# Docker meta-files (not needed inside image)
+docker-compose*.yml
+Dockerfile
+.dockerignore
+docker/nginx/
+docker/mysql/
+docker/scripts/
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db

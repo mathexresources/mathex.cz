@@ -1,0 +1,32 @@
+{if $paginator['pageCount'] > 1}
+<nav class="pagination" aria-label="Stránkování">
+    {if $paginator['page'] > 1}
+        <a href="{$presenter->link($link, ['page' => $paginator['page'] - 1] + $params)}" class="pagination__btn">← Předchozí</a>
+    {/if}
+
+    {var $cur = $paginator['page']}
+    {var $last = $paginator['pageCount']}
+    {var $ellipsisLeft = false}
+    {var $ellipsisRight = false}
+
+    {foreach range(1, $last) as $i}
+        {if $i === $cur}
+            <span class="pagination__btn pagination__btn--active">{$i}</span>
+        {elseif $i === 1 || $i === $last || abs($i - $cur) <= 2}
+            <a href="{$presenter->link($link, ['page' => $i] + $params)}" class="pagination__btn">{$i}</a>
+            {do $ellipsisLeft = false}
+            {do $ellipsisRight = false}
+        {elseif $i < $cur && !$ellipsisLeft}
+            <span class="pagination__ellipsis">…</span>
+            {do $ellipsisLeft = true}
+        {elseif $i > $cur && !$ellipsisRight}
+            <span class="pagination__ellipsis">…</span>
+            {do $ellipsisRight = true}
+        {/if}
+    {/foreach}
+
+    {if $paginator['page'] < $last}
+        <a href="{$presenter->link($link, ['page' => $paginator['page'] + 1] + $params)}" class="pagination__btn">Další →</a>
+    {/if}
+</nav>
+{/if}

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /temp/
+Disallow: /log/
+
+Sitemap: https://mathex.cz/sitemap.xml

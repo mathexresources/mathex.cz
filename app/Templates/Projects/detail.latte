@@ -1,0 +1,120 @@
+{block content}
+
+<article class="project-detail">
+
+    <header class="page-header">
+        <div class="container">
+            <a href="{link default}" class="back-link">← Zpět na projekty</a>
+            <span class="project-detail__category">{$project->category}</span>
+            <h1>{$pageTitle}</h1>
+            {if $project->{'description_' . $locale}}
+                <p class="page-header__lead">{$project->{'description_' . $locale}}</p>
+            {/if}
+
+            <ul class="project-detail__meta">
+                {if $project->client_name}<li><strong>Klient:</strong> {$project->client_name}</li>{/if}
+                {if $project->year}<li><strong>Rok:</strong> {$project->year}</li>{/if}
+            </ul>
+
+            {if $technologies}
+                <ul class="tag-list" style="margin-top:1rem;">
+                    {foreach $technologies as $tech}
+                        <li class="tag">{$tech}</li>
+                    {/foreach}
+                </ul>
+            {/if}
+
+            <div class="project-detail__links">
+                {if $project->project_url}
+                    <a href="{$project->project_url}" target="_blank" rel="noopener" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        Navštívit web
+                    </a>
+                {/if}
+                {if $project->github_url}
+                    <a href="{$project->github_url}" target="_blank" rel="noopener" class="btn btn-outline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                        GitHub
+                    </a>
+                {/if}
+            </div>
+        </div>
+    </header>
+
+    {* Cover image *}
+    {if $project->cover_image}
+    <div class="container">
+        <img src="{$project->cover_image}" alt="{$project->title}" class="project-detail__cover" loading="eager">
+    </div>
+    {/if}
+
+    {* Case study content *}
+    {if $caseStudy}
+    <div class="container">
+        <div class="project-detail__content prose">
+            {$caseStudy|noescape}
+        </div>
+    </div>
+    {/if}
+
+    {* Gallery lightbox *}
+    {if $gallery}
+    <section class="section section--gallery">
+        <div class="container">
+            <h2 class="section__title reveal">Galerie</h2>
+            <div class="gallery reveal" data-lightbox="project-gallery">
+                {foreach $gallery as $i => $image}
+                <a href="{$image}" class="gallery__item" data-lightbox="project-gallery" data-index="{$i}">
+                    <img src="{$image}" alt="{$project->title} – snímek {$i + 1}" loading="lazy" class="gallery__thumb">
+                </a>
+                {/foreach}
+            </div>
+        </div>
+    </section>
+    {/if}
+
+    {* Testimonials *}
+    {if iterator_count(clone $testimonials) > 0}
+    <section class="section section--testimonials" style="background: var(--c-bg-card); border-top: 1px solid var(--c-border);">
+        <div class="container">
+            <h2 class="section__title reveal">Co říká klient</h2>
+            <div class="testimonials-grid">
+                {foreach $testimonials as $i => $t}
+                <blockquote class="testimonial-card reveal reveal--delay-{min($i + 1, 3)}">
+                    {if $t->rating}
+                    <div class="testimonial-card__stars">
+                        {for $star = 1; $star <= 5; $star++}
+                            {if $star <= $t->rating}★{else}☆{/if}
+                        {/for}
+                    </div>
+                    {/if}
+                    <p class="testimonial-card__text">"{$t->{'text_' . $locale}}"</p>
+                    <footer class="testimonial-card__author">
+                        {if $t->avatar_url}
+                            <img src="{$t->avatar_url}" alt="{$t->client_name}" class="testimonial-card__avatar" loading="lazy">
+                        {/if}
+                        <div>
+                            <strong>{$t->client_name}</strong>
+                            {if $t->client_company}<span>{$t->client_company}</span>{/if}
+                        </div>
+                    </footer>
+                </blockquote>
+                {/foreach}
+            </div>
+        </div>
+    </section>
+    {/if}
+
+</article>
+
+<section class="section section--cta">
+    <div class="container">
+        <div class="cta-box reveal">
+            <h2>Chcete podobný projekt?</h2>
+            <p>Rezervujte si bezplatný discovery call a probereme, co pro vás mohu udělat.</p>
+            <a href="{link Meeting:}" class="btn btn-primary btn--large">Rezervovat discovery call</a>
+        </div>
+    </div>
+</section>
+
+{/block}

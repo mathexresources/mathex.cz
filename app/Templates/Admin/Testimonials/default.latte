@@ -1,0 +1,79 @@
+{block content}
+<div class="admin-toolbar">
+    <p class="text-muted">Přetažením změňte pořadí posudků.</p>
+    <a href="{link edit}" class="btn btn-primary">+ Nový posudek</a>
+</div>
+
+{if iterator_count($testimonials) > 0}
+    <div class="admin-section">
+        <table class="data-table" id="testimonialsTable">
+            <thead>
+                <tr>
+                    <th style="width:24px"></th>
+                    <th>Klient</th>
+                    <th>Text</th>
+                    <th>Hodnocení</th>
+                    <th>Hlavní</th>
+                    <th>Stav</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody id="sortableTestimonials">
+            {foreach $testimonials as $t}
+            <tr data-id="{$t->id}">
+                <td class="drag-handle" title="Přetáhnout">⠿</td>
+                <td>
+                    {if $t->avatar_url}
+                        <img src="{$t->avatar_url}" alt="{$t->client_name}" class="avatar-thumb">
+                    {/if}
+                    <strong>{$t->client_name}</strong>
+                    {if $t->client_position}<br><small class="text-muted">{$t->client_position}</small>{/if}
+                    {if $t->client_company}<br><small class="text-muted">{$t->client_company}</small>{/if}
+                </td>
+                <td class="message-preview">{$t->text_cs|truncate:100}</td>
+                <td>{str_repeat('★', (int) $t->rating)}{str_repeat('☆', 5 - (int) $t->rating)}</td>
+                <td>
+                    <a href="{link toggleFeatured $t->id}" class="badge {$t->featured ? 'badge--gold' : 'badge--gray'}">
+                        {$t->featured ? '⭐ Hlavní' : 'Ne'}
+                    </a>
+                </td>
+                <td>
+                    <a href="{link toggle $t->id}" class="badge {$t->active ? 'badge--green' : 'badge--gray'}">
+                        {$t->active ? 'Aktivní' : 'Skrytý'}
+                    </a>
+                </td>
+                <td class="actions">
+                    <a href="{link edit $t->id}" class="btn btn-xs btn-outline">Upravit</a>
+                    <a href="{link delete $t->id}" class="btn btn-xs btn-danger"
+                       onclick="return confirm('Opravdu smazat tento posudek?')">Smazat</a>
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+{else}
+    <p class="empty-state">Zatím žádné posudky. <a href="{link edit}">Přidat první</a></p>
+{/if}
+
+{block extraFoot}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1/Sortable.min.js"></script>
+<script>
+const tbody = document.getElementById('sortableTestimonials');
+if (tbody) {
+    Sortable.create(tbody, {
+        handle: '.drag-handle',
+        animation: 150,
+        onEnd: function() {
+            const ids = [...tbody.querySelectorAll('tr[data-id]')].map(r => r.dataset.id);
+            fetch('{link reorder}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: ids.map((id, i) => `ids[${i}]=${id}`).join('&')
+            });
+        }
+    });
+}
+</script>
+{/block}
+{/block}

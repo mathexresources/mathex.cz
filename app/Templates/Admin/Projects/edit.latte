@@ -1,0 +1,123 @@
+{block extraHead}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+{/block}
+
+{block content}
+<a href="{link default}" class="back-link">← Zpět na seznam</a>
+
+<div class="form-card form-card--wide">
+    {form projectForm}
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label title /}
+                {input title, class => 'form-control', id => 'projectTitle'}
+                {inputError title}
+            </div>
+            <div class="form-group">
+                {label slug /}
+                {input slug, class => 'form-control', id => 'projectSlug', placeholder => 'auto-generováno'}
+                {inputError slug}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label description_cs /}
+                {input description_cs, class => 'form-control', rows => 4}
+                {inputError description_cs}
+            </div>
+            <div class="form-group">
+                {label description_en /}
+                {input description_en, class => 'form-control', rows => 4}
+                {inputError description_en}
+            </div>
+        </div>
+
+        <div class="form-group">
+            {label case_study_content /}
+            {input case_study_content, id => 'caseStudy'}
+            {inputError case_study_content}
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label technologies /}
+                {input technologies, class => 'form-control', placeholder => 'PHP, Nette, MySQL, Vue.js'}
+                {inputError technologies}
+            </div>
+            <div class="form-group">
+                {label cover_image_file /}
+                {input cover_image_file, class => 'form-control'}
+                {inputError cover_image_file}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label project_url /}
+                {input project_url, class => 'form-control', placeholder => 'https://'}
+                {inputError project_url}
+            </div>
+            <div class="form-group">
+                {label github_url /}
+                {input github_url, class => 'form-control', placeholder => 'https://github.com/'}
+                {inputError github_url}
+            </div>
+        </div>
+
+        <div class="form-row form-row--three">
+            <div class="form-group">
+                {label client_name /}
+                {input client_name, class => 'form-control'}
+                {inputError client_name}
+            </div>
+            <div class="form-group">
+                {label year /}
+                {input year, class => 'form-control', placeholder => date('Y')}
+                {inputError year}
+            </div>
+            <div class="form-group">
+                {label category /}
+                {input category, class => 'form-control'}
+                {inputError category}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label order_index /}
+                {input order_index, class => 'form-control'}
+                {inputError order_index}
+            </div>
+        </div>
+
+        <div class="form-row form-row--checkboxes">
+            <label class="checkbox-label">{input featured} {label featured /}</label>
+            <label class="checkbox-label">{input published} {label published /}</label>
+        </div>
+
+        <div class="form-actions">
+            {input save, class => 'btn btn-primary'}
+            <a href="{link default}" class="btn btn-outline">Zrušit</a>
+        </div>
+    {/form}
+</div>
+
+{block extraFoot}
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+document.getElementById('projectTitle')?.addEventListener('input', function() {
+    const slug = document.getElementById('projectSlug');
+    if (slug && !slug.value) {
+        slug.value = this.value.toLowerCase()
+            .normalize('NFD').replace(/[̀-ͯ]/g, '')
+            .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+});
+const el = document.getElementById('caseStudy');
+if (el) {
+    new EasyMDE({ element: el, spellChecker: false, autosave: { enabled: true, uniqueId: 'project-case-study' } });
+}
+</script>
+{/block}
+{/block}

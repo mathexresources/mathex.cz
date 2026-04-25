@@ -1,0 +1,98 @@
+{block content}
+<a href="{link default}" class="back-link">← Zpět na schůzky</a>
+
+<div class="dashboard-grid">
+    <div class="admin-section">
+        <div class="admin-section__header">
+            <h2>Detail žádosti</h2>
+            <span class="badge badge--status-{$meeting->status}">
+                {var $statusLabels = ['pending' => 'Čeká na potvrzení', 'confirmed' => 'Potvrzeno', 'cancelled' => 'Zrušeno', 'completed' => 'Dokončeno']}
+                {$statusLabels[$meeting->status] ?? $meeting->status}
+            </span>
+        </div>
+        <div style="padding:1.5rem">
+            <dl class="detail-list">
+                <dt>Jméno</dt>
+                <dd>{$meeting->name}</dd>
+
+                <dt>E-mail</dt>
+                <dd><a href="mailto:{$meeting->email}">{$meeting->email}</a></dd>
+
+                {if $meeting->phone}
+                <dt>Telefon</dt>
+                <dd><a href="tel:{$meeting->phone}">{$meeting->phone}</a></dd>
+                {/if}
+
+                {if $meeting->company}
+                <dt>Firma</dt>
+                <dd>{$meeting->company}</dd>
+                {/if}
+
+                {if $meeting->service_type}
+                <dt>Typ služby</dt>
+                <dd>{$meeting->service_type}</dd>
+                {/if}
+
+                <dt>Požadované datum</dt>
+                <dd>{$meeting->preferred_date ? $meeting->preferred_date|date:'d.m.Y' : '—'}</dd>
+
+                <dt>Požadovaný čas</dt>
+                <dd>{$meeting->preferred_time ? $meeting->preferred_time|date:'H:i' : '—'}</dd>
+
+                <dt>Přijato</dt>
+                <dd>{$meeting->created_at|date:'d.m.Y H:i'}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-section__header">
+            <h2>Akce a poznámky</h2>
+        </div>
+        <div style="padding:1.5rem">
+            <div class="btn-group" style="margin-bottom:1.5rem">
+                {if $meeting->status !== 'confirmed'}
+                    <a href="{link updateStatus $meeting->id, status => 'confirmed'}"
+                       class="btn btn-outline"
+                       onclick="return confirm('Potvrdit schůzku a odeslat e-mail klientovi?')">✓ Potvrdit</a>
+                {/if}
+                {if $meeting->status !== 'completed'}
+                    <a href="{link updateStatus $meeting->id, status => 'completed'}"
+                       class="btn btn-outline">✓ Dokončit</a>
+                {/if}
+                {if $meeting->status !== 'cancelled'}
+                    <a href="{link updateStatus $meeting->id, status => 'cancelled'}"
+                       class="btn btn-outline btn-outline--danger"
+                       onclick="return confirm('Zrušit schůzku a odeslat e-mail klientovi?')">✕ Zrušit</a>
+                {/if}
+                <a href="mailto:{$meeting->email}?subject=Vaše%20žádost%20o%20schůzku"
+                   class="btn btn-outline">✉ E-mail klientovi</a>
+            </div>
+
+            {form notesForm}
+                <div class="form-group">
+                    {label status /}
+                    {input status, class => 'form-control'}
+                    {inputError status}
+                </div>
+                <div class="form-group">
+                    {label admin_notes /}
+                    {input admin_notes, class => 'form-control', rows => 5}
+                    {inputError admin_notes}
+                </div>
+                <div class="form-actions">
+                    {input save, class => 'btn btn-primary'}
+                </div>
+            {/form}
+
+            {if $meeting->admin_notes}
+            <div style="margin-top:1.5rem;padding:1rem;background:rgba(255,255,255,0.05);border-radius:6px">
+                <strong>Uložené poznámky:</strong>
+                <p style="margin-top:.5rem;white-space:pre-wrap">{$meeting->admin_notes}</p>
+            </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+{/block}

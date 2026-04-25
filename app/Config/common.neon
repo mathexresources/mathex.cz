@@ -1,0 +1,57 @@
+application:
+    errorPresenter: Error:Error4xx
+    catchExceptions: %productionMode%
+    mapping:
+        *: App\Presenters\*Presenter
+        Admin: App\Presenters\Admin\*Presenter
+        Error: App\Presenters\Error\*Presenter
+
+session:
+    expiration: 14 days
+    cookieSamesite: Lax
+
+database:
+    dsn: 'mysql:host=%env.DB_HOST%:3306;dbname=%env.DB_NAME%;charset=utf8mb4'
+    user: '%env.DB_USER%'
+    password: '%env.DB_PASSWORD%'
+    options:
+        lazy: true
+
+mail:
+    smtp: true
+    host: '%env.MAIL_HOST%'
+    port: '%env.MAIL_PORT%'
+
+extensions:
+    console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+    redis: Contributte\Redis\DI\RedisExtension
+    translation: Contributte\Translation\DI\TranslationExtension
+
+translation:
+    locales:
+        default: cs
+        whitelist:
+            - cs
+            - en
+    dirs:
+        - %appDir%/Lang
+    cache:
+        dir: %tempDir%/translation
+
+redis:
+    connection:
+        default:
+            uri: 'redis://%env.REDIS_HOST%:%env.REDIS_PORT%'
+            options: []
+
+console:
+    name: 'Mathex CLI'
+    version: '1.0.0'
+    catchExceptions: false
+
+parameters:
+    siteTitle: 'Mathex.cz'
+    siteAuthor: 'Mathex'
+    siteEmail: '%env.MAIL_FROM%'
+    contactEmail: '%env.MAIL_FROM%'
+    siteUrl: '%env.APP_URL%'

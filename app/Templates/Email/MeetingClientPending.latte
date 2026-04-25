@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rezervace přijata</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:'Segoe UI',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 20px;">
+  <tr><td align="center">
+    <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+      {* Header *}
+      <tr>
+        <td style="background:#0f172a;padding:28px 40px;">
+          <p style="margin:0;font-family:'Courier New',monospace;font-size:22px;font-weight:700;color:#22d3ee;letter-spacing:-0.03em;">{$siteTitle}</p>
+          <p style="margin:6px 0 0;font-size:13px;color:#64748b;">Rezervace discovery callu</p>
+        </td>
+      </tr>
+
+      {* Body *}
+      <tr>
+        <td style="padding:36px 40px;">
+          <p style="margin:0 0 16px;font-size:16px;color:#334155;">Dobrý den, <strong>{$meeting->name}</strong>,</p>
+          <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.6;">
+            děkujeme za zájem o spolupráci! Vaše žádost o schůzku byla úspěšně přijata.
+            Ozveme se vám <strong>do 24 hodin</strong> s potvrzením termínu.
+          </p>
+
+          {* Details box *}
+          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;margin-bottom:28px;">
+            <tr><td style="padding:20px 24px;">
+              <p style="margin:0 0 4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;">Souhrn rezervace</p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;">
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#64748b;width:140px;">Jméno</td>
+                  <td style="padding:5px 0;font-size:14px;color:#1e293b;font-weight:600;">{$meeting->name}</td>
+                </tr>
+                {if $meeting->company}
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#64748b;">Firma</td>
+                  <td style="padding:5px 0;font-size:14px;color:#1e293b;">{$meeting->company}</td>
+                </tr>
+                {/if}
+                {if $meeting->service_type}
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#64748b;">Typ služby</td>
+                  <td style="padding:5px 0;font-size:14px;color:#1e293b;">{$meeting->service_type}</td>
+                </tr>
+                {/if}
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#64748b;">Preferovaný datum</td>
+                  <td style="padding:5px 0;font-size:14px;color:#1e293b;font-weight:600;">
+                    {if $meeting->preferred_date}{date('j. n. Y', strtotime((string) $meeting->preferred_date))}{else}Bude upřesněno{/if}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#64748b;">Preferovaný čas</td>
+                  <td style="padding:5px 0;font-size:14px;color:#1e293b;font-weight:600;">
+                    {if $meeting->preferred_time}{date('H:i', strtotime((string) $meeting->preferred_time))}{else}Bude upřesněno{/if}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:5px 0;font-size:14px;color:#64748b;">Stav</td>
+                  <td style="padding:5px 0;"><span style="background:#fef3c7;color:#92400e;font-size:13px;padding:2px 10px;border-radius:999px;font-weight:600;">Čeká na potvrzení</span></td>
+                </tr>
+              </table>
+            </td></tr>
+          </table>
+
+          <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">
+            Pokud máte jakékoliv dotazy, odpovězte přímo na tento e-mail nebo nás kontaktujte na
+            <a href="mailto:{$fromEmail}" style="color:#6366f1;text-decoration:none;">{$fromEmail}</a>.
+          </p>
+        </td>
+      </tr>
+
+      {* Footer *}
+      <tr>
+        <td style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:20px 40px;">
+          <p style="margin:0;font-size:13px;color:#94a3b8;">S pozdravem, <strong style="color:#475569;">{$siteTitle}</strong></p>
+          <p style="margin:6px 0 0;font-size:12px;color:#cbd5e1;">Tento e-mail byl odeslán automaticky, prosím neodpovídejte na něj přímo.</p>
+        </td>
+      </tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>

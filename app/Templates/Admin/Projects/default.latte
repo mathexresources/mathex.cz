@@ -1,0 +1,86 @@
+{block content}
+<div class="admin-toolbar">
+    <p class="text-muted">Přetažením řádků změňte pořadí projektů.</p>
+    <a href="{link edit}" class="btn btn-primary">+ Nový projekt</a>
+</div>
+
+{if $projects->count() > 0}
+    <div class="admin-section">
+        <table class="data-table" id="projectsTable">
+            <thead>
+                <tr>
+                    <th style="width:24px"></th>
+                    <th>Název</th>
+                    <th>Kategorie</th>
+                    <th>Technologie</th>
+                    <th>Rok</th>
+                    <th>Pořadí</th>
+                    <th>Stav</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody id="sortableProjects">
+            {foreach $projects as $project}
+            <tr data-id="{$project->id}">
+                <td class="drag-handle" title="Přetáhnout">⠿</td>
+                <td>
+                    <strong>{$project->title}</strong>
+                    {if $project->featured}
+                        <span class="badge badge--gold">⭐ hlavní</span>
+                    {/if}
+                    {if $project->client_name}
+                        <br><small class="text-muted">{$project->client_name}</small>
+                    {/if}
+                </td>
+                <td>{$project->category ?: '—'}</td>
+                <td>
+                    {var $techs = $project->technologies ? json_decode($project->technologies, true) : []}
+                    {if $techs}
+                        {foreach array_slice($techs, 0, 3) as $t}
+                            <span class="tech-tag">{$t}</span>
+                        {/foreach}
+                        {if count($techs) > 3}<small class="text-muted">+{count($techs) - 3}</small>{/if}
+                    {else}—{/if}
+                </td>
+                <td>{$project->year ?: '—'}</td>
+                <td>{$project->order_index}</td>
+                <td>
+                    <a href="{link toggle $project->id}" class="badge {$project->published ? 'badge--green' : 'badge--gray'}">
+                        {$project->published ? 'Publikováno' : 'Skryto'}
+                    </a>
+                </td>
+                <td class="actions">
+                    <a href="{link edit $project->id}" class="btn btn-xs btn-outline">Upravit</a>
+                    <a href="{link delete $project->id}" class="btn btn-xs btn-danger"
+                       onclick="return confirm('Opravdu smazat projekt?')">Smazat</a>
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+{else}
+    <p class="empty-state">Zatím žádné projekty. <a href="{link edit}">Přidat první</a></p>
+{/if}
+
+{block extraFoot}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1/Sortable.min.js"></script>
+<script n:syntax="off">
+const tbody = document.getElementById('sortableProjects');
+if (tbody) {
+    Sortable.create(tbody, {
+        handle: '.drag-handle',
+        animation: 150,
+        onEnd: function() {
+            const ids = [...tbody.querySelectorAll('tr[data-id]')].map(r => r.dataset.id);
+            fetch('{link reorder}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: ids.map((id, i) => `ids[${i}]=${id}`).join('&')
+            });
+        }
+    });
+}
+</script>
+{/block}
+{/block}

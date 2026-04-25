@@ -1,0 +1,73 @@
+{block content}
+
+<div class="admin-toolbar">
+    <div class="admin-toolbar__filters">
+        <form method="get" action="" class="search-form">
+            <select name="filter" class="form-control form-control--sm" onchange="this.form.submit()">
+                <option value="">Všichni odběratelé</option>
+                <option value="confirmed" n:attr="selected => $filter === 'confirmed'">Potvrzení</option>
+                <option value="unconfirmed" n:attr="selected => $filter === 'unconfirmed'">Nepotvrzení</option>
+            </select>
+        </form>
+        <div class="stats-row" style="display:flex;gap:1rem;align-items:center;">
+            <span class="badge badge--green">✓ {$confirmedCount} potvrzených</span>
+            <span class="badge badge--gray">∑ {$totalCount} celkem</span>
+        </div>
+    </div>
+    <a href="{link send}" class="btn btn-primary">📧 Odeslat newsletter</a>
+</div>
+
+{if $subscribers->count() > 0}
+<div class="admin-section">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>E-mail</th>
+                <th>Stav</th>
+                <th>Potvrzen</th>
+                <th>Přihlášen</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+        {foreach $subscribers as $sub}
+        <tr>
+            <td>{$sub->email}</td>
+            <td>
+                {if $sub->unsubscribed_at}
+                    <span class="badge badge--gray">Odhlášen</span>
+                {elseif $sub->confirmed}
+                    <span class="badge badge--green">Aktivní</span>
+                {else}
+                    <span class="badge badge--yellow">Čeká na potvrzení</span>
+                {/if}
+            </td>
+            <td>{$sub->confirmed_at ? $sub->confirmed_at|date:'d.m.Y' : '—'}</td>
+            <td>{$sub->created_at|date:'d.m.Y'}</td>
+            <td class="actions">
+                <a href="{link deleteSubscriber $sub->id}" class="btn btn-xs btn-danger"
+                   onclick="return confirm('Opravdu smazat odběratele {$sub->email}?')">Smazat</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+
+{if $paginator['pageCount'] > 1}
+<nav class="pagination" aria-label="Stránkování">
+    {if $paginator['page'] > 1}
+        <a href="{link default, page: $paginator['page'] - 1, filter: $filter}" class="pagination__prev">←</a>
+    {/if}
+    <span class="pagination__info">{$paginator['page']} / {$paginator['pageCount']} ({$paginator['total']} celkem)</span>
+    {if $paginator['page'] < $paginator['pageCount']}
+        <a href="{link default, page: $paginator['page'] + 1, filter: $filter}" class="pagination__next">→</a>
+    {/if}
+</nav>
+{/if}
+
+{else}
+    <p class="empty-state">Žádní odběratelé. Přidejte newsletter widget na web.</p>
+{/if}
+
+{/block}

@@ -1,0 +1,46 @@
+{block content}
+<article class="project-detail">
+    <header class="page-header">
+        <div class="container">
+            <a href="{link default}" class="back-link">← Zpět na projekty</a>
+            <h1>{$project->title}</h1>
+            {if $project->{'description_' . $locale}}
+                <p class="page-header__lead">{$project->{'description_' . $locale}}</p>
+            {/if}
+            {if $project->technologies}
+                <ul class="tag-list">
+                    {foreach json_decode($project->technologies, true) ?? [] as $tech}
+                        <li class="tag">{trim($tech)}</li>
+                    {/foreach}
+                </ul>
+            {/if}
+            <div class="project-detail__links">
+                {if $project->project_url}
+                    <a href="{$project->project_url}" target="_blank" rel="noopener" class="btn btn-primary">
+                        Navštívit web ↗
+                    </a>
+                {/if}
+                {if $project->github_url}
+                    <a href="{$project->github_url}" target="_blank" rel="noopener" class="btn btn-outline">
+                        GitHub ↗
+                    </a>
+                {/if}
+            </div>
+        </div>
+    </header>
+
+    {if $project->cover_image}
+        <div class="container">
+            <img src="{$project->cover_image}" alt="{$project->title}" class="project-detail__image">
+        </div>
+    {/if}
+
+    {if $project->case_study_content}
+        <div class="container">
+            <div class="project-detail__content prose">
+                {$project->case_study_content|noescape}
+            </div>
+        </div>
+    {/if}
+</article>
+{/block}

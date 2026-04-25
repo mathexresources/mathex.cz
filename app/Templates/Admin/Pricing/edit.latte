@@ -1,0 +1,83 @@
+{block content}
+<a href="{link default}" class="back-link">← Zpět na seznam</a>
+
+<div class="form-card form-card--wide">
+    {form planForm}
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label name_cs /}
+                {input name_cs, class => 'form-control'}
+                {inputError name_cs}
+            </div>
+            <div class="form-group">
+                {label name_en /}
+                {input name_en, class => 'form-control'}
+                {inputError name_en}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label service_id /}
+                {input service_id, class => 'form-control'}
+                {inputError service_id}
+            </div>
+            <div class="form-group">
+                {label billing_type /}
+                {input billing_type, class => 'form-control'}
+                {inputError billing_type}
+            </div>
+        </div>
+
+        <div class="form-row form-row--three">
+            <div class="form-group">
+                {label price_from /}
+                {input price_from, class => 'form-control', placeholder => 'např. 5000'}
+                {inputError price_from}
+            </div>
+            <div class="form-group">
+                {label price_to /}
+                {input price_to, class => 'form-control', placeholder => 'volitelné'}
+                {inputError price_to}
+            </div>
+            <div class="form-group">
+                {label currency /}
+                {input currency, class => 'form-control'}
+                {inputError currency}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label features_cs /}
+                {input features_cs, class => 'form-control', rows => 6}
+                {inputError features_cs}
+                <small class="form-hint">Každý bod na nový řádek</small>
+            </div>
+            <div class="form-group">
+                {label features_en /}
+                {input features_en, class => 'form-control', rows => 6}
+                {inputError features_en}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label order_index /}
+                {input order_index, class => 'form-control'}
+                {inputError order_index}
+            </div>
+        </div>
+
+        <div class="form-row form-row--checkboxes">
+            <label class="checkbox-label">{input highlighted} {label highlighted /}</label>
+            <label class="checkbox-label">{input active} {label active /}</label>
+        </div>
+
+        <div class="form-actions">
+            {input save, class => 'btn btn-primary'}
+            <a href="{link default}" class="btn btn-outline">Zrušit</a>
+        </div>
+    {/form}
+</div>
+{/block}

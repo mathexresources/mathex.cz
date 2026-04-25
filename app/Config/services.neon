@@ -1,0 +1,119 @@
+services:
+    router: App\Router\RouterFactory::createRouter
+
+    # -------------------------------------------------------------------------
+    # Repositories
+    # -------------------------------------------------------------------------
+    - App\Model\Database\UserRepository
+    - App\Model\Database\BlogPostRepository
+    - App\Model\Database\BlogCommentRepository
+    - App\Model\Database\NewsletterRepository
+    - App\Model\Database\ProjectRepository
+    - App\Model\Database\ServiceRepository
+    - App\Model\Database\PricingRepository
+    - App\Model\Database\MeetingRepository
+    - App\Model\Database\BlockedDateRepository
+    - App\Model\Database\TestimonialRepository
+    - App\Model\Database\SkillRepository
+    - App\Model\Database\SettingsRepository
+    - App\Model\Database\ContactRepository
+    - App\Model\Database\AnalyticsRepository
+
+    # Legacy – kept for backwards compatibility (maps to old "messages" table)
+    - App\Model\Database\MessageRepository
+
+    # -------------------------------------------------------------------------
+    # Services
+    # -------------------------------------------------------------------------
+    - App\Model\Service\SlugService
+
+    - App\Model\Service\MarkdownService
+
+    - App\Model\Service\ImageUploadService(
+        uploadDir: %appDir%/../www/uploads,
+        uploadUrl: /uploads
+    )
+
+    mailRenderer:
+        factory: App\Model\Mail\MailTemplateRenderer(
+            templateDir: %appDir%/Templates/Email,
+            cacheDir: %tempDir%/latte-mail
+        )
+
+    - App\Model\Service\EmailService(
+        mailer: @Nette\Mail\Mailer,
+        from: '%siteEmail%',
+        fromName: '%siteTitle%',
+        adminEmail: '%contactEmail%',
+        adminPanelUrl: '%siteUrl%',
+        siteUrl: '%siteUrl%',
+        mailRenderer: @mailRenderer
+    )
+
+    - App\Model\Service\NewsletterService(
+        newsletter: @App\Model\Database\NewsletterRepository,
+        mailer: @Nette\Mail\Mailer,
+        from: '%siteEmail%',
+        fromName: '%siteTitle%',
+        siteUrl: '%siteUrl%',
+        siteTitle: '%siteTitle%'
+    )
+
+    - App\Model\Service\CalendarExportService(
+        siteTitle: '%siteTitle%',
+        siteUrl: '%siteUrl%'
+    )
+
+    - App\Model\Service\WebhookService
+
+    googleCalendar:
+        factory: App\Model\Service\GoogleCalendarService(
+            enabled: false,
+            calendarId: '',
+            credentialsJson: ''
+        )
+
+    - App\Model\Service\LocalizationService(
+        httpRequest: @Nette\Http\IRequest,
+        httpResponse: @Nette\Http\IResponse,
+        session: @Nette\Http\Session
+    )
+
+    - App\Model\Service\RateLimiterService
+
+    - App\Model\Service\LoggerFactory(
+        logDir: %appDir%/../log
+    )
+
+    # -------------------------------------------------------------------------
+    # Security
+    # -------------------------------------------------------------------------
+    - App\Model\Security\Authenticator
+
+    # -------------------------------------------------------------------------
+    # Mail
+    # -------------------------------------------------------------------------
+    - App\Model\Mail\MailSender(
+        mailer: @Nette\Mail\Mailer,
+        from: '%siteEmail%',
+        fromName: '%siteTitle%'
+    )
+
+    # -------------------------------------------------------------------------
+    # Components
+    # -------------------------------------------------------------------------
+    - App\Components\ContactForm\ContactFormFactory(
+        contactEmail: '%contactEmail%'
+    )
+
+    # -------------------------------------------------------------------------
+    # CLI Commands
+    # -------------------------------------------------------------------------
+    - App\Command\MigrateCommand
+    - App\Command\SeedCommand
+    - App\Command\CreateAdminCommand
+    - App\Command\ClearCacheCommand
+    - App\Command\GenerateSitemapCommand(siteUrl: '%siteUrl%')
+    - App\Command\CleanupCommand
+    - App\Command\ExportMeetingsCommand
+    - App\Command\SendNewsletterCommand

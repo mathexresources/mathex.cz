@@ -1,0 +1,111 @@
+{block content}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header__eyebrow">{_'nav.contact'}</div>
+        <h1>{$pageTitle}</h1>
+        <p class="page-header__lead">
+            {_'contact.meta_desc'}
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="contact-layout">
+
+            <div class="contact-layout__form">
+                <h2>{_'contact.form_title'}</h2>
+                {form contactForm, class => "form contact-form"}
+                    <div class="form__row">
+                        {label name, class => "form__label"/}
+                        {input name, class => "form__input"}
+                        <span class="form__error">{inputError name}</span>
+                    </div>
+
+                    <div class="form__row">
+                        {label email, class => "form__label"/}
+                        {input email, class => "form__input"}
+                        <span class="form__error">{inputError email}</span>
+                    </div>
+
+                    <div class="form__row">
+                        {label subject, class => "form__label"/}
+                        {input subject, class => "form__input"}
+                        <span class="form__error">{inputError subject}</span>
+                    </div>
+
+                    <div class="form__row">
+                        {label message, class => "form__label"/}
+                        {input message, class => "form__textarea"}
+                        <span class="form__error">{inputError message}</span>
+                    </div>
+
+                    <div class="form__row form__row--checkbox">
+                        {input gdpr_consent, class => "form__checkbox", id => "gdpr_consent"}
+                        <label for="gdpr_consent" class="form__checkbox-label form__checkbox-label--small">
+                            {_'contact.gdpr'|noescape}
+                        </label>
+                        <span class="form__error">{inputError gdpr_consent}</span>
+                    </div>
+
+                    <div class="form__row form__row--submit">
+                        {input send, class => "btn btn-primary btn--large"}
+                    </div>
+                {/form}
+            </div>
+
+            <aside class="contact-layout__info">
+                <div class="contact-info-card">
+                    <h2>{_'contact.direct_title'}</h2>
+                    <ul class="contact-list">
+                        <li>
+                            <strong>{_'contact.field_email'}</strong>
+                            <a href="mailto:info@mathex.cz">info@mathex.cz</a>
+                        </li>
+                        <li>
+                            <strong>{_'contact.field_linkedin'}</strong>
+                            <a href="https://linkedin.com/in/mathex" target="_blank" rel="noopener">linkedin.com/in/mathex</a>
+                        </li>
+                        <li>
+                            <strong>{_'contact.field_github'}</strong>
+                            <a href="https://github.com/mathex" target="_blank" rel="noopener">github.com/mathex</a>
+                        </li>
+                        <li>
+                            <strong>{_'contact.field_location'}</strong>
+                            <span style="color:var(--c-text);">Brno, Česká republika</span>
+                        </li>
+                        <li>
+                            <strong>{_'contact.field_hours'}</strong>
+                            <span style="color:var(--c-text);">Po–Pá 9:00–17:00</span>
+                        </li>
+                    </ul>
+                    <p class="contact-response-note">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        {_'contact.response_note'}
+                    </p>
+                </div>
+
+                <div class="contact-info-card contact-info-card--cta">
+                    <h3>{_'contact.prefer_call'}</h3>
+                    <p>{_'contact.prefer_call_desc'}</p>
+                    <a href="{link Meeting:}" class="btn btn-primary btn--full" style="margin-top:0.25rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        {_'contact.book_call'}
+                    </a>
+                </div>
+
+                <div class="contact-map">
+                    <iframe
+                        src="https://maps.google.com/maps?q=Brno,+Czech+Republic&output=embed"
+                        width="100%" height="220" style="border:0; display:block;" loading="lazy"
+                        allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+                        title="Brno, ČR"></iframe>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+</section>
+
+{/block}

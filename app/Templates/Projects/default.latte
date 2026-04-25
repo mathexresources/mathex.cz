@@ -1,0 +1,89 @@
+{block content}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header__eyebrow">Portfolio</div>
+        <h1>{$pageTitle}</h1>
+        <p class="page-header__lead">Přehled webových aplikací, e-shopů a API systémů, na kterých jsem pracoval.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {* Category filter *}
+        {if $categories}
+        <nav class="category-filter" aria-label="Filtr kategorií">
+            <a href="{link default}"
+               n:class="'category-filter__item', $activeCategory === '' ? 'active'"
+               data-filter="">
+                Vše
+            </a>
+            {foreach $categories as $cat}
+                <a href="{link default, category: $cat}"
+                   n:class="'category-filter__item', $activeCategory === $cat ? 'active'"
+                   data-filter="{$cat}">
+                    {$cat}
+                </a>
+            {/foreach}
+        </nav>
+        {/if}
+
+        {if iterator_count(clone $projects) > 0}
+            <div class="projects-grid projects-grid--full" id="projects-grid">
+                {foreach $projects as $i => $project}
+                <article class="project-card reveal reveal--delay-{($i % 3) + 1}" data-category="{$project->category}">
+                    {if $project->cover_image}
+                        <a href="{link detail $project->slug}" class="project-card__image-link" tabindex="-1" aria-hidden="true">
+                            <img src="{$project->cover_image}" alt="{$project->title}" class="project-card__image" loading="lazy">
+                        </a>
+                    {/if}
+                    <div class="project-card__body">
+                        <span class="project-card__category">{$project->category}</span>
+                        <h2 class="project-card__title">
+                            <a href="{link detail $project->slug}">{$project->title}</a>
+                        </h2>
+                        {if $project->{'description_' . $locale}}
+                            <p class="project-card__desc">{$project->{'description_' . $locale}}</p>
+                        {/if}
+                        {if $project->technologies}
+                            <ul class="tag-list">
+                                {foreach json_decode($project->technologies, true) ?? [] as $tech}
+                                    <li class="tag">{$tech}</li>
+                                {/foreach}
+                            </ul>
+                        {/if}
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:0.5rem; flex-wrap:wrap; gap:0.5rem;">
+                            <a href="{link detail $project->slug}" class="btn btn-sm btn-outline">Case study →</a>
+                            {if $project->year}
+                                <span style="font-size:0.8125rem; color:var(--c-muted); font-family:var(--f-mono);">{$project->year}</span>
+                            {/if}
+                        </div>
+                    </div>
+                </article>
+                {/foreach}
+            </div>
+        {else}
+            <p class="empty-state">
+                {if $activeCategory}Žádné projekty v kategorii „{$activeCategory}".{else}Zatím žádné projekty. Brzy přidám!{/if}
+            </p>
+        {/if}
+
+    </div>
+</section>
+
+{* CTA *}
+<section class="section section--cta" style="background: var(--c-bg-card); border-top: 1px solid var(--c-border);">
+    <div class="container">
+        <div class="cta-box reveal">
+            <h2>Chcete projekt jako tyto?</h2>
+            <p>Napište mi nebo si rezervujte bezplatný discovery call.</p>
+            <div class="cta-box__actions">
+                <a href="{link Meeting:}" class="btn btn-primary">Rezervovat call</a>
+                <a href="{link Contact:}" class="btn btn-outline">Napsat zprávu</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{/block}

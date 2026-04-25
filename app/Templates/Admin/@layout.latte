@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{ifset $pageTitle}{$pageTitle} | {/ifset}Admin – {$siteTitle}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{$basePath}assets/css/admin.css">
+    {block extraHead}{/block}
+</head>
+<body class="admin-body">
+
+<aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">
+        <a href="{link :Admin:Dashboard:}">{$siteTitle}</a>
+        <span>admin panel</span>
+    </div>
+
+    <nav class="admin-nav" aria-label="Admin navigace">
+        <a href="{link :Admin:Dashboard:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Dashboard:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Přehled
+        </a>
+
+        <div class="admin-nav__section">Obsah</div>
+
+        <a href="{link :Admin:Blog:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Blog:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Blog
+        </a>
+        <a href="{link :Admin:Projects:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Projects:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Projekty
+        </a>
+        <a href="{link :Admin:Services:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Services:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M21 12h-2M5 12H3M19.07 19.07l-1.41-1.41M6.34 6.34L4.93 4.93"/></svg>
+            Služby
+        </a>
+        <a href="{link :Admin:Pricing:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Pricing:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Ceník
+        </a>
+        <a href="{link :Admin:Skills:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Skills:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Dovednosti
+        </a>
+        <a href="{link :Admin:Testimonials:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Testimonials:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Posudky
+        </a>
+
+        <div class="admin-nav__section">Komunikace</div>
+
+        <a href="{link :Admin:Messages:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Messages:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Zprávy
+            {if ($unreadMessages ?? 0) > 0}
+                <span class="nav-badge">{$unreadMessages}</span>
+            {/if}
+        </a>
+        <a href="{link :Admin:Meetings:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Meetings:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Schůzky
+        </a>
+        <a href="{link :Admin:Newsletter:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Newsletter:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Newsletter
+        </a>
+
+        <div class="admin-nav__section">Systém</div>
+
+        <a href="{link :Admin:Analytics:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Analytics:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Analytika
+        </a>
+        <a href="{link :Admin:Settings:}" n:class="'admin-nav__link', $presenter->isLinkCurrent(':Admin:Settings:*') ? 'active'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M21 12h-2M5 12H3M19.07 19.07l-1.41-1.41M6.34 6.34L4.93 4.93"/></svg>
+            Nastavení
+        </a>
+    </nav>
+
+    <div class="admin-sidebar__footer">
+        <a href="{link :Homepage:}" class="admin-nav__link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Zpět na web
+        </a>
+        <a href="{link :Admin:Sign:out}" class="admin-nav__link admin-nav__link--logout">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Odhlásit se
+        </a>
+    </div>
+</aside>
+
+<div class="admin-main">
+    <header class="admin-topbar">
+        <div class="admin-topbar__left">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Otevřít menu">&#9776;</button>
+            <h1 class="admin-topbar__title">{ifset $pageTitle}{$pageTitle}{else}Admin{/ifset}</h1>
+        </div>
+        <div class="admin-topbar__right">
+            <a href="{link :Admin:Profile:}" class="admin-topbar__user">
+                {$user->getIdentity()?->getData()['name'] ?? 'Admin'}
+            </a>
+        </div>
+    </header>
+
+    <div class="admin-content">
+        {foreach $flashes as $flash}
+            <div class="flash flash--{$flash->type}" role="alert">{$flash->message}</div>
+        {/foreach}
+
+        {include content}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="{$basePath}assets/js/admin.js"></script>
+{block extraFoot}{/block}
+</body>
+</html>

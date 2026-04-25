@@ -1,0 +1,146 @@
+{block content}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card__value">{$projectCount}</div>
+        <div class="stat-card__label">Projektů</div>
+        <a href="{link Projects:}" class="stat-card__link">Spravovat</a>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__value">{$blogPostCount}</div>
+        <div class="stat-card__label">Článků na blogu</div>
+        <a href="{link Blog:}" class="stat-card__link">Spravovat</a>
+    </div>
+    <div class="stat-card stat-card--highlight">
+        <div class="stat-card__value">{$unreadCount}</div>
+        <div class="stat-card__label">Nepřečtených zpráv</div>
+        <a href="{link Messages:, filter => 'unread'}" class="stat-card__link">Zobrazit</a>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__value">{$meetingCount}</div>
+        <div class="stat-card__label">Čekajících schůzek</div>
+        <a href="{link Meetings:, status => 'pending'}" class="stat-card__link">Zobrazit</a>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__value">{$pageViewsTotal}</div>
+        <div class="stat-card__label">Zobrazení za 30 dní</div>
+        <a href="{link Analytics:}" class="stat-card__link">Analytika</a>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <h2>Návštěvnost (posledních 30 dní)</h2>
+        </div>
+        <div style="padding:1.5rem">
+            <canvas id="visitorChart" height="80"></canvas>
+        </div>
+    </section>
+
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <h2>Nejnavštěvovanější stránky</h2>
+            <a href="{link Analytics:}" class="btn btn-sm btn-outline">Vše</a>
+        </div>
+        {if $topPages}
+            <table class="data-table">
+                <thead><tr><th>Stránka</th><th style="text-align:right">Zobrazení</th></tr></thead>
+                <tbody>
+                {foreach $topPages as $page}
+                    <tr>
+                        <td><code>{$page['path']}</code></td>
+                        <td style="text-align:right">{$page['views']}</td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        {else}
+            <p class="empty-state">Žádná data.</p>
+        {/if}
+    </section>
+
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <h2>Poslední zprávy</h2>
+            <a href="{link Messages:}" class="btn btn-sm btn-outline">Všechny zprávy</a>
+        </div>
+        {if iterator_count($latestMessages) > 0}
+            <table class="data-table">
+                <thead><tr><th>Jméno</th><th>E-mail</th><th>Předmět</th><th>Přijato</th><th></th></tr></thead>
+                <tbody>
+                {foreach $latestMessages as $msg}
+                <tr n:class="!$msg->is_read ? 'row--unread'">
+                    <td>{$msg->name}</td>
+                    <td><a href="mailto:{$msg->email}">{$msg->email}</a></td>
+                    <td>{$msg->subject ?: '—'}</td>
+                    <td>{$msg->created_at|date:'d.m. H:i'}</td>
+                    <td>
+                        {if !$msg->is_read}
+                            <a href="{link Messages:read $msg->id}" class="btn btn-xs btn-outline">Přečteno</a>
+                        {/if}
+                    </td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        {else}
+            <p class="empty-state">Žádné zprávy.</p>
+        {/if}
+    </section>
+
+    <section class="admin-section">
+        <div class="admin-section__header">
+            <h2>Nadcházející schůzky</h2>
+            <a href="{link Meetings:}" class="btn btn-sm btn-outline">Všechny schůzky</a>
+        </div>
+        {if iterator_count($upcomingMeetings) > 0}
+            <table class="data-table">
+                <thead><tr><th>Jméno</th><th>Datum</th><th>Čas</th><th>Stav</th></tr></thead>
+                <tbody>
+                {foreach $upcomingMeetings as $m}
+                <tr>
+                    <td>{$m->name}<br><small class="text-muted">{$m->email}</small></td>
+                    <td>{$m->preferred_date ? ($m->preferred_date|date:'d.m.Y') : '—'}</td>
+                    <td>{$m->preferred_time ? ($m->preferred_time|date:'H:i') : '—'}</td>
+                    <td><span class="badge badge--status-{$m->status}">{$m->status}</span></td>
+                </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        {else}
+            <p class="empty-state">Žádné čekající schůzky.</p>
+        {/if}
+    </section>
+</div>
+
+{block extraFoot}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+    const stats = {json_encode($visitorStats)};
+    const labels = stats.map(s => s.date);
+    const views  = stats.map(s => s.views);
+    const unique = stats.map(s => s.unique_sessions);
+
+    new Chart(document.getElementById('visitorChart'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                { label: 'Zobrazení', data: views, borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.1)', tension: 0.4, fill: true },
+                { label: 'Unikátní relace', data: unique, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.08)', tension: 0.4, fill: true }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#e2e8f0' } } },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+            }
+        }
+    });
+})();
+</script>
+{/block}
+{/block}

@@ -1,0 +1,62 @@
+{block content}
+
+<div class="admin-toolbar">
+    <div class="admin-toolbar__filters">
+        <form method="get" action="" class="search-form">
+            <select name="filter" class="form-control form-control--sm" onchange="this.form.submit()">
+                <option value="pending" n:attr="selected => $filter === 'pending'">Čekající ke schválení</option>
+                <option value="approved" n:attr="selected => $filter === 'approved'">Schválené</option>
+                <option value="rejected" n:attr="selected => $filter === 'rejected'">Zamítnuté</option>
+            </select>
+        </form>
+    </div>
+    <a href="{link default}" class="btn btn-outline btn-sm">← Zpět na blog</a>
+</div>
+
+{if $comments->count() > 0}
+<div class="admin-section">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Autor</th>
+                <th>Komentář</th>
+                <th>Článek</th>
+                <th>Datum</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+        {foreach $comments as $comment}
+        <tr>
+            <td>
+                <strong>{$comment->name}</strong><br>
+                <small class="text-muted">{$comment->email}</small>
+            </td>
+            <td style="max-width:400px;">
+                <p style="margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{$comment->content}</p>
+            </td>
+            <td>
+                {var $post = $comment->ref('blog_posts', 'post_id')}
+                {if $post}<a href="{link edit $post->id}">{$post->title_cs}</a>{/if}
+            </td>
+            <td>{$comment->created_at|date:'d.m.Y H:i'}</td>
+            <td class="actions">
+                {if $comment->status !== 'approved'}
+                    <a href="{link approveComment $comment->id}" class="btn btn-xs btn-outline">✓ Schválit</a>
+                {/if}
+                {if $comment->status !== 'rejected'}
+                    <a href="{link rejectComment $comment->id}" class="btn btn-xs btn-outline">✗ Zamítnout</a>
+                {/if}
+                <a href="{link deleteComment $comment->id}" class="btn btn-xs btn-danger"
+                   onclick="return confirm('Smazat komentář?')">Smazat</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>
+{else}
+    <p class="empty-state">Žádné komentáře v kategorii „{$filter}".</p>
+{/if}
+
+{/block}

@@ -1,0 +1,47 @@
+{block extraHead}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+{/block}
+
+{block content}
+<a href="{link default}" class="back-link">← Zpět na odběratele</a>
+
+<div class="form-card form-card--wide">
+    <div class="alert alert--info" style="margin-bottom:1.5rem;">
+        <strong>Newsletter bude odeslán {$confirmedCount} potvrzeným odběratelům.</strong>
+        Do obsahu vložte <code>{{unsubscribe_url}}</code> pro odkaz na odhlášení.
+    </div>
+
+    {form sendForm}
+        <div class="form-group">
+            {label subject /}
+            {input subject, class => 'form-control', placeholder => 'Předmět newsletteru'}
+            {inputError subject}
+        </div>
+
+        <div class="form-group">
+            {label body /}
+            {input body, id => 'newsletter_body'}
+            {inputError body}
+        </div>
+
+        <div class="form-actions">
+            {input send, class => 'btn btn-primary', onclick => "return confirm('Odeslat newsletter " . $confirmedCount . " odběratelům?')"}
+            <a href="{link default}" class="btn btn-ghost">Zrušit</a>
+        </div>
+    {/form}
+</div>
+
+{block extraFoot}
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+const el = document.getElementById('newsletter_body');
+if (el) {
+    new EasyMDE({
+        element: el,
+        spellChecker: false,
+        toolbar: ['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'],
+    });
+}
+</script>
+{/block}
+{/block}

@@ -1,0 +1,20 @@
+page_title: Blog
+tag_title: 'Články se štítkem: %s'
+tag_meta_desc: 'Články o tématu %s.'
+meta_desc: 'Články o PHP, Nette, webovém vývoji a freelance životě.'
+read_more: Číst dál
+reading_time: '%d min čtení'
+tags: Štítky
+search_placeholder: Hledat v blogu…
+no_posts: Žádné články nenalezeny.
+prev_post: Předchozí článek
+next_post: Další článek
+comments: Komentáře
+comment_form_title: Napsat komentář
+comment_name: 'Jméno:'
+comment_email: 'E-mail:'
+comment_content: 'Komentář:'
+comment_submit: Odeslat komentář
+comment_pending: Komentář byl odeslán ke schválení. Děkujeme!
+newsletter_cta: 'Přihlaste se k odběru nových článků.'
+subscribe: Přihlásit se k odběru

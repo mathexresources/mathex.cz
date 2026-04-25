@@ -1,0 +1,282 @@
+{block extraHead}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+{/block}
+
+{block content}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+    <a href="{link default}" class="back-link">← Zpět na seznam</a>
+    {if $postId}
+        <a href="{link preview $postId}" target="_blank" class="btn btn-outline btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Náhled
+        </a>
+    {/if}
+</div>
+
+<div class="form-card form-card--wide">
+    {form blogForm}
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label title_cs /}
+                {input title_cs, class => 'form-control', placeholder => 'Nadpis článku'}
+                {inputError title_cs}
+            </div>
+            <div class="form-group">
+                {label title_en /}
+                {input title_en, class => 'form-control', placeholder => 'Article Title (optional)'}
+                {inputError title_en}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label slug /}
+                {input slug, class => 'form-control', id => 'slug', placeholder => 'auto-generováno z nadpisu'}
+                {inputError slug}
+            </div>
+            <div class="form-group">
+                <label>Tagy:</label>
+                <div class="tag-autocomplete-wrap">
+                    <div id="tags-chips" class="tags-chips"></div>
+                    <input type="text" id="tag-search-input" class="form-control" placeholder="Přidat tag…" autocomplete="off">
+                    <div id="tag-suggestions" class="tag-suggestions" style="display:none"></div>
+                </div>
+                {input tags, id => 'tags-hidden', class => 'form-control', style => 'display:none'}
+                {inputError tags}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label perex_cs /}
+                {input perex_cs, class => 'form-control', rows => 3, placeholder => 'Krátký popis článku (CS)'}
+                {inputError perex_cs}
+            </div>
+            <div class="form-group">
+                {label perex_en /}
+                {input perex_en, class => 'form-control', rows => 3, placeholder => 'Short description (EN)'}
+                {inputError perex_en}
+            </div>
+        </div>
+
+        <div class="editor-tabs">
+            <div class="editor-tab-bar">
+                <button type="button" class="editor-tab active" data-tab="tab-cs">Obsah CS</button>
+                <button type="button" class="editor-tab" data-tab="tab-en">Content EN</button>
+            </div>
+            <div id="tab-cs" class="editor-tab-content" data-content="tab-cs">
+                <div class="reading-time-preview" id="reading-time-cs"></div>
+                <div class="form-group">
+                    {input content_cs, id => 'content_cs'}
+                    {inputError content_cs}
+                </div>
+            </div>
+            <div id="tab-en" class="editor-tab-content" data-content="tab-en" style="display:none">
+                <div class="reading-time-preview" id="reading-time-en"></div>
+                <div class="form-group">
+                    {input content_en, id => 'content_en'}
+                    {inputError content_en}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row form-row--three">
+            <div class="form-group">
+                {label cover_image_file /}
+                {if $coverImage}
+                    <div style="margin-bottom:0.5rem;">
+                        <img src="{$coverImage}" alt="Aktuální cover" id="cover-preview" style="max-width:200px;border-radius:6px;border:1px solid var(--c-border);">
+                    </div>
+                {else}
+                    <img id="cover-preview" src="" alt="" style="display:none;max-width:200px;border-radius:6px;border:1px solid var(--c-border);margin-bottom:0.5rem;">
+                {/if}
+                {input cover_image_file, class => 'form-control', id => 'cover_image_file', 'data-preview' => 'cover-preview'}
+                <small style="color:var(--c-muted);">Doporučeno: 1200×630 px. Automaticky ořízne na OG formát.</small>
+                {inputError cover_image_file}
+            </div>
+            <div class="form-group">
+                {label status /}
+                {input status, class => 'form-control'}
+                {inputError status}
+            </div>
+            <div class="form-group">
+                {label published_at /}
+                {input published_at, class => 'form-control'}
+                {inputError published_at}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            {input save, class => 'btn btn-primary'}
+            {input preview, class => 'btn btn-outline'}
+            <a href="{link default}" class="btn btn-ghost">Zrušit</a>
+            <span id="autosave-indicator" class="autosave-indicator" style="display:none">✓ Automaticky uloženo</span>
+        </div>
+    {/form}
+</div>
+
+{block extraFoot}
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+(function() {
+    const postId = {$postId ?? 'null'};
+
+    /* ─── Slug auto-generation ─────────────────────────────────────────── */
+    const titleCs = document.getElementById('title_cs');
+    const slugEl  = document.getElementById('slug');
+    if (titleCs && slugEl) {
+        titleCs.addEventListener('input', function() {
+            if (!slugEl.value || slugEl.dataset.manualEdit !== '1') {
+                slugEl.value = this.value.toLowerCase()
+                    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+                    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            }
+        });
+        slugEl.addEventListener('input', () => { slugEl.dataset.manualEdit = '1'; });
+    }
+
+    /* ─── Reading time estimation ──────────────────────────────────────── */
+    function calcReadingTime(text) {
+        const words = text.trim().split(/\s+/).filter(Boolean).length;
+        return Math.max(1, Math.ceil(words / 200));
+    }
+
+    /* ─── EasyMDE editors ──────────────────────────────────────────────── */
+    const editors = {};
+    ['content_cs', 'content_en'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const lang = id.slice(-2).toUpperCase();
+        editors[id] = new EasyMDE({
+            element: el,
+            spellChecker: false,
+            autosave: {
+                enabled: true,
+                uniqueId: 'mathex-blog-' + id + '-' + (postId || 'new'),
+                delay: 30000,
+                submit_delay: 5000,
+                timeFormat: { locale: 'cs-CZ' },
+            },
+            toolbar: [
+                'bold','italic','heading','|',
+                'quote','unordered-list','ordered-list','|',
+                'link','image','table','|',
+                'code','|',
+                'preview','side-by-side','fullscreen','|','guide'
+            ],
+            status: ['autosave', 'lines', 'words'],
+        });
+
+        // Update reading time on change
+        editors[id].codemirror.on('change', () => {
+            const rtEl = document.getElementById('reading-time-' + id.slice(-2));
+            if (rtEl) {
+                const mins = calcReadingTime(editors[id].value());
+                rtEl.textContent = '⏱ Odhadovaný čas čtení: ' + mins + ' min';
+                rtEl.style.display = 'block';
+            }
+            showAutosaveIndicator();
+        });
+    });
+
+    /* ─── localStorage autosave indicator ─────────────────────────────── */
+    let saveTimeout;
+    function showAutosaveIndicator() {
+        const ind = document.getElementById('autosave-indicator');
+        if (!ind) return;
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            ind.style.display = 'inline';
+            setTimeout(() => { ind.style.display = 'none'; }, 3000);
+        }, 30000);
+    }
+
+    /* ─── Tag autocomplete ─────────────────────────────────────────────── */
+    const existingTags = {$existingTags|json_encode|noescape};
+    const hiddenTagInput = document.getElementById('tags-hidden');
+    const tagSearchInput = document.getElementById('tag-search-input');
+    const tagSuggestions = document.getElementById('tag-suggestions');
+    const tagChips       = document.getElementById('tags-chips');
+
+    let activeTags = [];
+    if (hiddenTagInput && hiddenTagInput.value) {
+        activeTags = hiddenTagInput.value.split(',').map(t => t.trim()).filter(Boolean);
+    }
+
+    function syncHiddenField() {
+        if (hiddenTagInput) hiddenTagInput.value = activeTags.join(', ');
+    }
+
+    function renderChips() {
+        if (!tagChips) return;
+        tagChips.innerHTML = '';
+        activeTags.forEach((tag, i) => {
+            const chip = document.createElement('span');
+            chip.className = 'tag-chip';
+            chip.innerHTML = tag + ' <button type="button" aria-label="Odebrat tag ' + tag + '">×</button>';
+            chip.querySelector('button').addEventListener('click', () => {
+                activeTags.splice(i, 1);
+                syncHiddenField();
+                renderChips();
+            });
+            tagChips.appendChild(chip);
+        });
+    }
+
+    function addTag(tag) {
+        tag = tag.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+        if (tag && !activeTags.includes(tag)) {
+            activeTags.push(tag);
+            syncHiddenField();
+            renderChips();
+        }
+        if (tagSearchInput) tagSearchInput.value = '';
+        if (tagSuggestions) tagSuggestions.style.display = 'none';
+    }
+
+    function showSuggestions(query) {
+        if (!tagSuggestions) return;
+        const q = query.toLowerCase();
+        const matches = existingTags.filter(t => t.includes(q) && !activeTags.includes(t));
+        if (!matches.length && !q) { tagSuggestions.style.display = 'none'; return; }
+
+        tagSuggestions.innerHTML = '';
+        matches.slice(0, 8).forEach(tag => {
+            const item = document.createElement('div');
+            item.className = 'tag-suggestion-item';
+            item.textContent = tag;
+            item.addEventListener('mousedown', e => { e.preventDefault(); addTag(tag); });
+            tagSuggestions.appendChild(item);
+        });
+
+        if (q && !existingTags.includes(q)) {
+            const newItem = document.createElement('div');
+            newItem.className = 'tag-suggestion-item tag-suggestion-item--new';
+            newItem.textContent = '+ Vytvořit "' + q + '"';
+            newItem.addEventListener('mousedown', e => { e.preventDefault(); addTag(q); });
+            tagSuggestions.appendChild(newItem);
+        }
+
+        tagSuggestions.style.display = tagSuggestions.children.length ? 'block' : 'none';
+    }
+
+    if (tagSearchInput) {
+        tagSearchInput.addEventListener('input', () => showSuggestions(tagSearchInput.value));
+        tagSearchInput.addEventListener('focus', () => showSuggestions(tagSearchInput.value));
+        tagSearchInput.addEventListener('blur', () => {
+            setTimeout(() => { if (tagSuggestions) tagSuggestions.style.display = 'none'; }, 200);
+        });
+        tagSearchInput.addEventListener('keydown', e => {
+            if ((e.key === 'Enter' || e.key === ',') && tagSearchInput.value.trim()) {
+                e.preventDefault();
+                addTag(tagSearchInput.value.trim().replace(',', ''));
+            }
+        });
+    }
+
+    renderChips();
+
+})();
+</script>
+{/block}
+{/block}

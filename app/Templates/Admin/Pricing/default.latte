@@ -1,0 +1,70 @@
+{block content}
+<div class="admin-toolbar">
+    <p class="text-muted">Spravujte cenové plány.</p>
+    <a href="{link edit}" class="btn btn-primary">+ Nový plán</a>
+</div>
+
+{if iterator_count($plans) > 0}
+    <div class="admin-section">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Název</th>
+                    <th>Služba</th>
+                    <th>Cena</th>
+                    <th>Fakturace</th>
+                    <th>Pořadí</th>
+                    <th>Stav</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach $plans as $plan}
+            <tr>
+                <td>
+                    <strong>{$plan->name_cs}</strong>
+                    {if $plan->highlighted} <span class="badge badge--gold">★ Doporučený</span>{/if}
+                    {if $plan->name_en}<br><small class="text-muted">{$plan->name_en}</small>{/if}
+                </td>
+                <td>
+                    {var $svc = null}
+                    {foreach $services as $s}
+                        {if $s->id == $plan->service_id}{do $svc = $s}{/if}
+                    {/foreach}
+                    {$svc ? $svc->title_cs : '—'}
+                </td>
+                <td>
+                    {if $plan->price_from !== null}
+                        {if $plan->price_to !== null}
+                            {number_format($plan->price_from, 0, ',', ' ')}–{number_format($plan->price_to, 0, ',', ' ')} {$plan->currency}
+                        {else}
+                            od {number_format($plan->price_from, 0, ',', ' ')} {$plan->currency}
+                        {/if}
+                    {else}
+                        —
+                    {/if}
+                </td>
+                <td>
+                    {var $billingLabels = ['fixed' => 'Fixní', 'hourly' => 'Hodinová', 'monthly' => 'Měsíční']}
+                    {$billingLabels[$plan->billing_type] ?? $plan->billing_type}
+                </td>
+                <td>{$plan->order_index}</td>
+                <td>
+                    <a href="{link toggle $plan->id}" class="badge {$plan->active ? 'badge--green' : 'badge--gray'}">
+                        {$plan->active ? 'Aktivní' : 'Neaktivní'}
+                    </a>
+                </td>
+                <td class="actions">
+                    <a href="{link edit $plan->id}" class="btn btn-xs btn-outline">Upravit</a>
+                    <a href="{link delete $plan->id}" class="btn btn-xs btn-danger"
+                       onclick="return confirm('Opravdu smazat tento cenový plán?')">Smazat</a>
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+{else}
+    <p class="empty-state">Zatím žádné cenové plány. <a href="{link edit}">Přidat první</a></p>
+{/if}
+{/block}

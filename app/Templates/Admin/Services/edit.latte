@@ -1,0 +1,90 @@
+{block content}
+<a href="{link default}" class="back-link">← Zpět na seznam</a>
+
+<div class="form-card form-card--wide">
+    {form serviceForm}
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label title_cs /}
+                {input title_cs, class => 'form-control', id => 'serviceTitle'}
+                {inputError title_cs}
+            </div>
+            <div class="form-group">
+                {label title_en /}
+                {input title_en, class => 'form-control'}
+                {inputError title_en}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label slug /}
+                {input slug, class => 'form-control', id => 'serviceSlug', placeholder => 'auto-generováno'}
+                {inputError slug}
+            </div>
+            <div class="form-group">
+                {label icon /}
+                {input icon, class => 'form-control', placeholder => '💻 nebo CSS třída'}
+                {inputError icon}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label description_cs /}
+                {input description_cs, class => 'form-control', rows => 4}
+                {inputError description_cs}
+            </div>
+            <div class="form-group">
+                {label description_en /}
+                {input description_en, class => 'form-control', rows => 4}
+                {inputError description_en}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label features_cs /}
+                {input features_cs, class => 'form-control', rows => 6}
+                {inputError features_cs}
+                <small class="form-hint">Každý bod na nový řádek</small>
+            </div>
+            <div class="form-group">
+                {label features_en /}
+                {input features_en, class => 'form-control', rows => 6}
+                {inputError features_en}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label order_index /}
+                {input order_index, class => 'form-control'}
+                {inputError order_index}
+            </div>
+        </div>
+
+        <div class="form-row form-row--checkboxes">
+            <label class="checkbox-label">{input active} {label active /}</label>
+        </div>
+
+        <div class="form-actions">
+            {input save, class => 'btn btn-primary'}
+            <a href="{link default}" class="btn btn-outline">Zrušit</a>
+        </div>
+    {/form}
+</div>
+
+{block extraFoot}
+<script>
+document.getElementById('serviceTitle')?.addEventListener('input', function() {
+    const slug = document.getElementById('serviceSlug');
+    if (slug && !slug.value) {
+        slug.value = this.value.toLowerCase()
+            .normalize('NFD').replace(/[̀-ͯ]/g, '')
+            .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+});
+</script>
+{/block}
+{/block}

@@ -1,0 +1,64 @@
+{block content}
+<div class="admin-toolbar">
+    <div class="admin-toolbar__filters">
+        <div class="btn-group">
+            <a href="{link default}" class="btn btn-sm {$activeFilter === 'all' ? 'btn-primary' : 'btn-outline'}">
+                Vše
+            </a>
+            <a href="{link default, filter => 'unread'}" class="btn btn-sm {$activeFilter === 'unread' ? 'btn-primary' : 'btn-outline'}">
+                Nepřečtené
+                {if $unreadMessages > 0}<span class="nav-badge">{$unreadMessages}</span>{/if}
+            </a>
+            <a href="{link default, filter => 'read'}" class="btn btn-sm {$activeFilter === 'read' ? 'btn-primary' : 'btn-outline'}">
+                Přečtené
+            </a>
+        </div>
+    </div>
+</div>
+
+{if $messages->count() > 0}
+    <div class="admin-section">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Jméno</th>
+                    <th>E-mail</th>
+                    <th>Předmět</th>
+                    <th>Zpráva</th>
+                    <th>Přijato</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach $messages as $msg}
+            <tr n:class="!$msg->is_read ? 'row--unread'">
+                <td>{$msg->name}</td>
+                <td><a href="mailto:{$msg->email}">{$msg->email}</a></td>
+                <td>{$msg->subject ?: '—'}</td>
+                <td class="message-preview">{$msg->message|truncate:100}</td>
+                <td>{$msg->created_at|date:'d.m.Y H:i'}</td>
+                <td class="actions">
+                    {if !$msg->is_read}
+                        <a href="{link read $msg->id}" class="btn btn-xs btn-outline">Přečteno</a>
+                    {else}
+                        <a href="{link unread $msg->id}" class="btn btn-xs btn-outline">Nepřečteno</a>
+                    {/if}
+                    <a href="mailto:{$msg->email}?subject=Re:%20{$msg->subject|encodeUrl}"
+                       class="btn btn-xs btn-outline">Odpovědět</a>
+                    <a href="{link delete $msg->id}"
+                       class="btn btn-xs btn-danger"
+                       onclick="return confirm('Smazat zprávu?')">Smazat</a>
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+
+    {include '../../_pagination.latte', paginator => $paginator, link => 'default', params => ['filter' => $activeFilter]}
+{else}
+    <p class="empty-state">
+        {if $activeFilter === 'unread'}Žádné nepřečtené zprávy.{elseif $activeFilter === 'read'}Žádné přečtené zprávy.{else}Žádné zprávy.{/if}
+    </p>
+{/if}
+{/block}

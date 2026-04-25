@@ -1,0 +1,11 @@
+includes:
+    - vendor/phpstan/phpstan-nette/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - app
+    ignoreErrors:
+        - '#Call to an undefined method Nette\\Database\\Table\\ActiveRow::#'
+    bootstrapFiles:
+        - vendor/autoload.php

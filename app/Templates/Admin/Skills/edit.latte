@@ -1,0 +1,60 @@
+{block content}
+<a href="{link default}" class="back-link">← Zpět na seznam</a>
+
+<div class="form-card">
+    {form skillForm}
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label name /}
+                {input name, class => 'form-control'}
+                {inputError name}
+            </div>
+            <div class="form-group">
+                {label category /}
+                {input category, class => 'form-control'}
+                {inputError category}
+            </div>
+        </div>
+
+        <div class="form-group">
+            {label icon_class /}
+            {input icon_class, class => 'form-control'}
+            {inputError icon_class}
+            <small class="form-hint">Např. <code>devicon-php-plain</code> nebo <code>devicon-react-original</code></small>
+        </div>
+
+        <div class="form-group">
+            {label level /}
+            <div class="skill-slider-wrap">
+                {input level, class => 'skill-slider', id => 'skillLevel'}
+                <span class="skill-slider-value" id="skillLevelValue">80 %</span>
+            </div>
+            {inputError level}
+        </div>
+
+        <div class="form-group">
+            {label order_index /}
+            {input order_index, class => 'form-control'}
+            {inputError order_index}
+        </div>
+
+        <div class="form-actions">
+            {input save, class => 'btn btn-primary'}
+            <a href="{link default}" class="btn btn-outline">Zrušit</a>
+        </div>
+    {/form}
+</div>
+
+{block extraFoot}
+<script>
+const slider = document.getElementById('skillLevel');
+const display = document.getElementById('skillLevelValue');
+if (slider && display) {
+    display.textContent = slider.value + ' %';
+    slider.addEventListener('input', function() {
+        display.textContent = this.value + ' %';
+    });
+}
+</script>
+{/block}
+{/block}

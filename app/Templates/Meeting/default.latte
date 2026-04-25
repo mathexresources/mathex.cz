@@ -1,0 +1,221 @@
+{block content}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header__eyebrow">Rezervace</div>
+        <h1>{$pageTitle}</h1>
+        <p class="page-header__lead">
+            Bezplatný 30minutový call, kde probereme váš projekt a možnosti spolupráce.
+            Bez závazků, bez salespitche.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="booking-steps reveal">
+            <div class="booking-step active">
+                <span class="booking-step__num">1</span>
+                <span class="booking-step__label">Vyplnit formulář</span>
+            </div>
+            <div class="booking-step">
+                <span class="booking-step__num">2</span>
+                <span class="booking-step__label">Potvrzení e-mailem</span>
+            </div>
+            <div class="booking-step">
+                <span class="booking-step__num">3</span>
+                <span class="booking-step__label">Call do 24 h</span>
+            </div>
+        </div>
+
+        <div class="meeting-layout">
+
+            <div class="meeting-layout__form reveal">
+                <h2>Vyplňte formulář</h2>
+                {form bookingForm, class => "form booking-form", id => "bookingForm"}
+
+                    {* Honeypot – hidden from humans *}
+                    <div class="hp-trap" aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden;opacity:0;">
+                        {input hp_url, class => "form__input", autocomplete => "off"}
+                    </div>
+
+                    <div class="form__row">
+                        {label name, class => "form__label"/}
+                        {input name, class => "form__input", placeholder => "Jan Novák"}
+                        <span class="form__error">{inputError name}</span>
+                    </div>
+
+                    <div class="form__row">
+                        {label email, class => "form__label"/}
+                        {input email, class => "form__input", placeholder => "jan@firma.cz"}
+                        <span class="form__error">{inputError email}</span>
+                    </div>
+
+                    <div class="form__row form__row--half">
+                        <div>
+                            {label phone, class => "form__label"/}
+                            {input phone, class => "form__input", placeholder => "+420 ..."}
+                            <span class="form__error">{inputError phone}</span>
+                        </div>
+                        <div>
+                            {label company, class => "form__label"/}
+                            {input company, class => "form__input", placeholder => "Název firmy nebo web"}
+                            <span class="form__error">{inputError company}</span>
+                        </div>
+                    </div>
+
+                    <div class="form__row">
+                        {label service_type, class => "form__label"/}
+                        {input service_type, class => "form__select"}
+                        <span class="form__error">{inputError service_type}</span>
+                    </div>
+
+                    <div class="form__row">
+                        <label class="form__label">Preferovaný datum:</label>
+                        {input preferred_date, class => "form__input", id => "bookingDate"}
+                        <span class="form__error">{inputError preferred_date}</span>
+                        <p id="dateWeekendError" class="form__error" style="display:none">Vyberte pracovní den (Po–Pá).</p>
+                    </div>
+
+                    <div class="form__row" id="slotsRow" style="display:none">
+                        <label class="form__label">Preferovaný čas:</label>
+                        <div id="slotsContainer" class="slots-grid"></div>
+                        {input preferred_time, id => "preferredTimeHidden"}
+                        <p id="slotsLoading" style="display:none;color:var(--c-muted);font-size:0.875rem;">Načítám dostupné časy…</p>
+                        <p id="slotsEmpty"   style="display:none;color:var(--c-muted);font-size:0.875rem;">Pro vybraný den nejsou dostupné časy.</p>
+                    </div>
+
+                    <div class="form__row">
+                        {label message, class => "form__label"/}
+                        {input message, class => "form__textarea", placeholder => "Stručně popište projekt nebo otázku…"}
+                        <span class="form__error">{inputError message}</span>
+                    </div>
+
+                    <div class="form__row form__row--submit">
+                        {input send, class => "btn btn-primary btn--large", id => "bookingSubmit"}
+                    </div>
+                {/form}
+            </div>
+
+            <aside class="meeting-layout__info reveal reveal--delay-2">
+                <div class="meeting-info-card">
+                    <h3>Co vás čeká</h3>
+                    <ul class="meeting-checklist">
+                        <li>30 minut, zdarma</li>
+                        <li>Analýza vašeho projektu</li>
+                        <li>Návrh řešení a technologií</li>
+                        <li>Orientační rozsah a cena</li>
+                        <li>Prostor pro vaše dotazy</li>
+                    </ul>
+                </div>
+
+                <div class="meeting-info-card">
+                    <h3>Dostupné termíny</h3>
+                    <p>
+                        <strong style="color:var(--c-text);">Po–Pá 9:00–17:00</strong><br>
+                        Google Meet nebo Microsoft Teams
+                    </p>
+                    <p>Potvrzení obdržíte e-mailem do 24 hodin.</p>
+                </div>
+
+                <div class="meeting-info-card" style="border-color: rgba(34, 211, 238, 0.2);">
+                    <h3>Raději píšete?</h3>
+                    <p>Napište mi přímo na <a href="mailto:info@mathex.cz" style="color:var(--c-text);">info@mathex.cz</a> nebo přes <a href="{link Contact:}" style="color:var(--c-text);">kontaktní formulář</a>.</p>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+</section>
+
+{* Pass booking config to JS via data attribute (avoids Latte script-context filter restrictions) *}
+<div id="booking-config" data-json="{$bookingConfigJson}" hidden></div>
+<script>
+window.BOOKING = JSON.parse(document.getElementById('booking-config').dataset.json);
+</script>
+
+{block scripts}
+<script>
+(function () {
+    const dateInput   = document.getElementById('bookingDate');
+    const slotsRow    = document.getElementById('slotsRow');
+    const slotsGrid   = document.getElementById('slotsContainer');
+    const hiddenTime  = document.getElementById('preferredTimeHidden');
+    const loadingMsg  = document.getElementById('slotsLoading');
+    const emptyMsg    = document.getElementById('slotsEmpty');
+    const weekendErr  = document.getElementById('dateWeekendError');
+    const form        = document.getElementById('bookingForm');
+
+    if (!dateInput) return;
+
+    // Block weekend selection visually
+    dateInput.addEventListener('change', function () {
+        const val = this.value;
+        if (!val) { hideSlotsRow(); return; }
+
+        const d = new Date(val + 'T00:00:00');
+        const dow = d.getDay(); // 0=Sun, 6=Sat
+        if (dow === 0 || dow === 6) {
+            weekendErr.style.display = '';
+            hideSlotsRow();
+            return;
+        }
+        weekendErr.style.display = 'none';
+        loadSlots(val);
+    });
+
+    function hideSlotsRow() {
+        slotsRow.style.display = 'none';
+        hiddenTime.value = '';
+    }
+
+    function loadSlots(date) {
+        slotsRow.style.display = '';
+        slotsGrid.innerHTML = '';
+        hiddenTime.value = '';
+        loadingMsg.style.display = '';
+        emptyMsg.style.display = 'none';
+
+        fetch(window.BOOKING.slotsUrl + '&date=' + encodeURIComponent(date))
+            .then(r => r.json())
+            .then(data => {
+                loadingMsg.style.display = 'none';
+                if (!data.slots || data.slots.length === 0) {
+                    emptyMsg.style.display = '';
+                    return;
+                }
+                data.slots.forEach(slot => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'slot-btn' + (slot.available ? '' : ' slot-btn--taken');
+                    btn.textContent = slot.time;
+                    btn.disabled = !slot.available;
+                    if (slot.available) {
+                        btn.addEventListener('click', function () {
+                            document.querySelectorAll('.slot-btn--active').forEach(b => b.classList.remove('slot-btn--active'));
+                            this.classList.add('slot-btn--active');
+                            hiddenTime.value = slot.time;
+                        });
+                    }
+                    slotsGrid.appendChild(btn);
+                });
+            })
+            .catch(() => {
+                loadingMsg.style.display = 'none';
+                emptyMsg.style.display = '';
+            });
+    }
+
+    // Restore slot selection after validation error (form re-rendered with date filled)
+    if (dateInput.value) {
+        const d = new Date(dateInput.value + 'T00:00:00');
+        if (d.getDay() !== 0 && d.getDay() !== 6) {
+            loadSlots(dateInput.value);
+        }
+    }
+})();
+</script>
+{/block}
+
+{/block}

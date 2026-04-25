@@ -1,0 +1,75 @@
+{block content}
+<a href="{link default}" class="back-link">← Zpět na seznam</a>
+
+<div class="form-card form-card--wide">
+    {form testimonialForm}
+        <div class="form-row form-row--three">
+            <div class="form-group">
+                {label client_name /}
+                {input client_name, class => 'form-control'}
+                {inputError client_name}
+            </div>
+            <div class="form-group">
+                {label client_company /}
+                {input client_company, class => 'form-control'}
+                {inputError client_company}
+            </div>
+            <div class="form-group">
+                {label client_position /}
+                {input client_position, class => 'form-control'}
+                {inputError client_position}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label avatar_file /}
+                {input avatar_file, class => 'form-control'}
+                {inputError avatar_file}
+                <small class="form-hint">Doporučeno 200×200 px. JPEG, PNG nebo WebP.</small>
+            </div>
+            <div class="form-group">
+                {label rating /}
+                {input rating, class => 'form-control'}
+                {inputError rating}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label text_cs /}
+                {input text_cs, class => 'form-control', rows => 5}
+                {inputError text_cs}
+            </div>
+            <div class="form-group">
+                {label text_en /}
+                {input text_en, class => 'form-control', rows => 5}
+                {inputError text_en}
+            </div>
+        </div>
+
+        <div class="form-row form-row--two">
+            <div class="form-group">
+                {label project_id /}
+                {input project_id, class => 'form-control'}
+                {inputError project_id}
+            </div>
+            <div class="form-group">
+                {label order_index /}
+                {input order_index, class => 'form-control'}
+                {inputError order_index}
+            </div>
+        </div>
+
+        <div class="form-row form-row--checkboxes">
+            <label class="checkbox-label">{input featured} {label featured /}</label>
+            <label class="checkbox-label">{input active} {label active /}</label>
+        </div>
+
+        <div class="form-actions">
+            {input save, class => 'btn btn-primary'}
+            <a href="{link default}" class="btn btn-outline">Zrušit</a>
+        </div>
+    {/form}
+</div>
+{/block}

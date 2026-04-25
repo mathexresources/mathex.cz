@@ -1,0 +1,26 @@
+page_title: Kontakt
+meta_desc: 'Napište mi – odpovím do 24 hodin. Nebo si rovnou rezervujte bezplatný discovery call.'
+form_title: Napište zprávu
+name: 'Jméno:'
+email: 'E-mail:'
+subject: 'Předmět:'
+message: 'Zpráva:'
+name_placeholder: Vaše jméno
+email_placeholder: vas@email.cz
+subject_placeholder: O čem píšete?
+message_placeholder: Napište svoji zprávu…
+send: Odeslat zprávu
+gdpr: 'Souhlasím se zpracováním osobních údajů pro účely odpovědi na mou zprávu. <a href="/soukromi">Zásady ochrany soukromí</a>.'
+gdpr_required: Musíte souhlasit se zpracováním osobních údajů.
+success: 'Zpráva byla odeslána. Ozvu se co nejdříve!'
+rate_limit: 'Příliš mnoho zpráv z vaší IP adresy. Zkuste to prosím za hodinu.'
+direct_title: Přímý kontakt
+field_email: E-mail
+field_linkedin: LinkedIn
+field_github: GitHub
+field_location: Sídlo
+field_hours: Pracovní doba
+response_note: 'Odpovídám zpravidla do 24 hodin v pracovní dny.'
+prefer_call: Raději mluvíte?
+prefer_call_desc: 'Rezervujte si bezplatný 30minutový discovery call. Probereme vše na místě.'
+book_call: Rezervovat call zdarma

@@ -1,0 +1,144 @@
+{block content}
+
+<section class="page-header">
+    <div class="container">
+        <div class="page-header__eyebrow">Služby</div>
+        <h1>{$pageTitle}</h1>
+        <p class="page-header__lead">Komplexní vývoj webových aplikací, e-shopů a REST API. Na míru, včas, s čistým kódem.</p>
+    </div>
+</section>
+
+{* Services cards *}
+<section class="section">
+    <div class="container">
+        <div class="section__title-group reveal">
+            <span class="section__eyebrow">Co nabízím</span>
+            <h2 class="section__title">Přehled služeb</h2>
+        </div>
+        {foreach $services as $i => $service}
+        <article class="service-detail reveal" id="service-{$service->slug}">
+            <div class="service-detail__header">
+                {if $service->icon}<span class="service-detail__icon">{$service->icon}</span>{/if}
+                <h2>{$service->{'title_' . $locale}}</h2>
+            </div>
+            <div class="service-detail__body">
+                <p>{$service->{'description_' . $locale}}</p>
+                {if $service->{'features_' . $locale}}
+                <ul class="feature-list">
+                    {foreach json_decode($service->{'features_' . $locale}, true) ?? [] as $feature}
+                        <li class="feature-list__item">{$feature}</li>
+                    {/foreach}
+                </ul>
+                {/if}
+            </div>
+            <div class="service-detail__cta">
+                <a href="{link Meeting:}?service={$service->slug}" class="btn btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Nezávazná poptávka
+                </a>
+            </div>
+        </article>
+        {else}
+            <p class="empty-state">Přehled služeb bude brzy doplněn.</p>
+        {/foreach}
+    </div>
+</section>
+
+{* Services icon grid (quick overview) *}
+<section class="section section--services-grid" style="background: var(--c-bg-card); border-top: 1px solid var(--c-border); border-bottom: 1px solid var(--c-border);">
+    <div class="container">
+        <div class="section__title-group reveal text-center">
+            <span class="section__eyebrow">Tech stack</span>
+            <h2 class="section__title">Technologie, které používám</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card reveal reveal--delay-1">
+                <div class="service-card__icon">🐘</div>
+                <h3>PHP 8.x</h3>
+                <p>Moderní PHP s typovým systémem, match expressions a fiber support.</p>
+            </div>
+            <div class="service-card reveal reveal--delay-2">
+                <div class="service-card__icon">🔥</div>
+                <h3>Nette Framework</h3>
+                <p>DI kontejner, Latte šablony, Tracy debugger. Česká kvalita.</p>
+            </div>
+            <div class="service-card reveal reveal--delay-3">
+                <div class="service-card__icon">🗄️</div>
+                <h3>MySQL / PostgreSQL</h3>
+                <p>Relační databáze, Doctrine ORM, migrační strategie.</p>
+            </div>
+            <div class="service-card reveal reveal--delay-4">
+                <div class="service-card__icon">💚</div>
+                <h3>Vue.js</h3>
+                <p>Reaktivní UI komponenty integrované s PHP backendem.</p>
+            </div>
+            <div class="service-card reveal reveal--delay-1">
+                <div class="service-card__icon">🔌</div>
+                <h3>REST API</h3>
+                <p>OpenAPI spec, autentifikace, rate limiting, verzování.</p>
+            </div>
+            <div class="service-card reveal reveal--delay-2">
+                <div class="service-card__icon">🐋</div>
+                <h3>Docker & CI/CD</h3>
+                <p>Containerizace, GitHub Actions, automatické deploye.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{* Pricing comparison table *}
+{if $servicesWithPricing}
+<section class="section section--pricing-table">
+    <div class="container">
+        <div class="section__title-group reveal">
+            <span class="section__eyebrow">Orientační ceny</span>
+            <h2 class="section__title">Srovnání plánů</h2>
+        </div>
+        <div class="pricing-table-wrapper reveal">
+            <table class="pricing-table">
+                <thead>
+                    <tr>
+                        <th>Parametr</th>
+                        {foreach $servicesWithPricing as $sp}
+                            <th>{$sp['service']->{'title_' . $locale}}</th>
+                        {/foreach}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cena od</td>
+                        {foreach $servicesWithPricing as $sp}
+                            <td>
+                                {if $sp['plans']}
+                                    {$sp['plans'][0]->price_from ?? '—'} Kč
+                                {else}
+                                    Dle dohody
+                                {/if}
+                            </td>
+                        {/foreach}
+                    </tr>
+                    <tr>
+                        <td>Dodací lhůta</td>
+                        {foreach $servicesWithPricing as $sp}
+                            <td>Dle rozsahu</td>
+                        {/foreach}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{/if}
+
+{* CTA *}
+<section class="section section--cta">
+    <div class="container">
+        <div class="cta-box reveal">
+            <h2>Nevíte, co přesně potřebujete?</h2>
+            <p>Na discovery callu to společně zjistíme. Zdarma, bez závazků.</p>
+            <a href="{link Meeting:}" class="btn btn-primary btn--large">Rezervovat call zdarma</a>
+        </div>
+    </div>
+</section>
+
+{/block}

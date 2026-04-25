@@ -1,0 +1,26 @@
+{block content}
+<div class="login-wrap">
+    <div class="login-box">
+        <div class="login-box__logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h1 class="login-box__title">Přihlášení do administrace</h1>
+        {form signInForm, class => 'login-form'}
+            <div class="form-group">
+                {label email /}
+                {input email, class => 'form-control', autofocus => true, placeholder => 'vas@email.cz'}
+                {inputError email}
+            </div>
+            <div class="form-group">
+                {label password /}
+                {input password, class => 'form-control', placeholder => '••••••••'}
+                {inputError password}
+            </div>
+            <div class="form-group form-group--checkbox">
+                <label class="checkbox-label">{input remember} Zapamatovat přihlášení na 30 dní</label>
+            </div>
+            {input login, class => 'btn btn-primary btn--full'}
+        {/form}
+    </div>
+</div>
+{/block}
