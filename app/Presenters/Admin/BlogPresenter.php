@@ -55,7 +55,8 @@ final class BlogPresenter extends BaseAdminPresenter
     {
         $this->template->pageTitle  = $id ? 'Upravit článek' : 'Nový článek';
         $this->template->postId     = $id;
-        $this->template->existingTags = $this->blogPosts->getAllTags();
+        $this->template->existingTags    = $this->blogPosts->getAllTags();
+        $this->template->existingTagsJson = json_encode($this->blogPosts->getAllTags());
         $this->template->coverImage = null;
 
         if ($id) {

@@ -5,7 +5,7 @@
         <tr><th>Jméno</th><td>{$adminUser->name}</td></tr>
         <tr><th>E-mail</th><td>{$adminUser->email}</td></tr>
         <tr><th>Role</th><td>{$adminUser->role}</td></tr>
-        <tr><th>Poslední přihlášení</th><td>{$adminUser->last_login_at ? $adminUser->last_login_at|date:'d.m.Y H:i' : '—'}</td></tr>
+        <tr><th>Poslední přihlášení</th><td>{$adminUser->last_login_at ? ($adminUser->last_login_at|date:'d.m.Y H:i') : '—'}</td></tr>
     </table>
 
     <hr style="border-color: var(--color-border); margin: 2rem 0">

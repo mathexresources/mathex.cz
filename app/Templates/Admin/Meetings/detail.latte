@@ -34,10 +34,10 @@
                 {/if}
 
                 <dt>Požadované datum</dt>
-                <dd>{$meeting->preferred_date ? $meeting->preferred_date|date:'d.m.Y' : '—'}</dd>
+                <dd>{$meeting->preferred_date ? ($meeting->preferred_date|date:'d.m.Y') : '—'}</dd>
 
                 <dt>Požadovaný čas</dt>
-                <dd>{$meeting->preferred_time ? $meeting->preferred_time|date:'H:i' : '—'}</dd>
+                <dd>{$meeting->preferred_time ? ($meeting->preferred_time|date:'H:i') : '—'}</dd>
 
                 <dt>Přijato</dt>
                 <dd>{$meeting->created_at|date:'d.m.Y H:i'}</dd>

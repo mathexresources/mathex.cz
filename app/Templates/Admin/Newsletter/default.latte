@@ -42,7 +42,7 @@
                     <span class="badge badge--yellow">Čeká na potvrzení</span>
                 {/if}
             </td>
-            <td>{$sub->confirmed_at ? $sub->confirmed_at|date:'d.m.Y' : '—'}</td>
+            <td>{$sub->confirmed_at ? ($sub->confirmed_at|date:'d.m.Y') : '—'}</td>
             <td>{$sub->created_at|date:'d.m.Y'}</td>
             <td class="actions">
                 <a href="{link deleteSubscriber $sub->id}" class="btn btn-xs btn-danger"

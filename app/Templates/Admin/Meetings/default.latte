@@ -65,8 +65,8 @@
                     {if $m->phone}<br><a href="tel:{$m->phone}">{$m->phone}</a>{/if}
                 </td>
                 <td>{$m->service_type ?: '—'}</td>
-                <td>{$m->preferred_date ? $m->preferred_date|date:'d.m.Y' : '—'}</td>
-                <td style="font-family:var(--f-mono)">{$m->preferred_time ? $m->preferred_time|date:'H:i' : '—'}</td>
+                <td>{$m->preferred_date ? ($m->preferred_date|date:'d.m.Y') : '—'}</td>
+                <td style="font-family:var(--f-mono)">{$m->preferred_time ? ($m->preferred_time|date:'H:i') : '—'}</td>
                 <td>
                     <span class="badge badge--status-{$m->status}">
                         {var $statusLabels = ['pending' => 'Čeká', 'confirmed' => 'Potvrzeno', 'cancelled' => 'Zrušeno', 'completed' => 'Dokončeno']}
@@ -172,9 +172,9 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script>
 (function () {
-    const eventsUrl   = {link eventsJson|json|noescape};
-    const detailBase  = {link detail 0|json|noescape};
-    const statusBase  = {link updateStatus 0|json|noescape};
+    const eventsUrl   = {$eventsUrl};
+    const detailBase  = {$detailBase};
+    const statusBase  = {$statusBase};
 
     function makeStatusUrl(id, status) {
         return statusBase.replace('/0', '/' + id) + '?status=' + status;

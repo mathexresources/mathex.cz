@@ -192,7 +192,7 @@
     }
 
     /* ─── Tag autocomplete ─────────────────────────────────────────────── */
-    const existingTags = {$existingTags|json_encode|noescape};
+    const existingTags = {$existingTagsJson};
     const hiddenTagInput = document.getElementById('tags-hidden');
     const tagSearchInput = document.getElementById('tag-search-input');
     const tagSuggestions = document.getElementById('tag-suggestions');

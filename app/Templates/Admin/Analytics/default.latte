@@ -69,7 +69,7 @@
                 <tbody>
                 {foreach $referrers as $ref}
                 <tr>
-                    <td>{$ref['referer'] ?: '<em class="text-muted">přímá návštěva</em>'|noescape}</td>
+                    <td>{$ref['referrer'] ?: '<em class="text-muted">přímá návštěva</em>'|noescape}</td>
                     <td style="text-align:right">{$ref['views']}</td>
                 </tr>
                 {/foreach}

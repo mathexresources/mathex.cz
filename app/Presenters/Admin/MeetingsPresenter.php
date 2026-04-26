@@ -39,6 +39,9 @@ final class MeetingsPresenter extends BaseAdminPresenter
 
         $this->template->blockedDates   = $this->blockedDates->findActive()->fetchAll();
         $this->template->pendingCount   = $this->meetings->findPending()->count('*');
+        $this->template->eventsUrl      = $this->link('eventsJson');
+        $this->template->detailBase     = $this->link('detail', [0]);
+        $this->template->statusBase     = $this->link('updateStatus', [0]);
     }
 
     /** FullCalendar JSON event feed. */
