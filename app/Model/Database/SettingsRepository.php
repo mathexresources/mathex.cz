@@ -34,7 +34,7 @@ final class SettingsRepository
         if ($existing) {
             $this->getTable()->where('key', $key)->update(['value' => $value]);
         } else {
-            $this->getTable()->insert(['key' => $key, 'value' => $value]);
+            $this->getTable()->insert(['key' => $key, 'value' => $value, 'label' => $key]);
         }
     }
 
